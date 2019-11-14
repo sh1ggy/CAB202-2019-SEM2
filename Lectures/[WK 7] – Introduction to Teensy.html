@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<!-- saved from url=(0125)https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><title>CAB202 Topic 7 – Introduction to Teensy</title>
+
+	<script type="text/javascript" src="./[WK 7] – Introduction to Teensy_files/syntaxhighlighter.js.download"></script>
+	<link type="text/css" rel="stylesheet" href="./[WK 7] – Introduction to Teensy_files/theme.css">
+
+	<style type="text/css">
+		
+			body {
+				max-width: 50em;
+				/* font-family: sans-serif; */
+				margin: auto;
+				line-height: 1.4em;
+				background-color: #F1F1F1;
+			}
+		
+
+		.indent {
+			margin-left: 0.6cm;
+		}
+
+		.codeblock {
+			font-size: +1;
+			font-family: monospace;
+			font-weight: bold;
+			background-color: #303030;
+			color: #dcdcdc;
+			/* font-size: large; */
+		}
+
+		.codeDiv {
+			overflow: scroll;
+			border: 1px solid gray;
+		}
+
+		pre {
+			border: 1px solid gray;
+			padding: 6pt;
+			width: 100%;
+		}
+
+		textarea {
+			margin-top: 6pt;
+		}
+
+		td {
+			/* width: 4in; */
+			vertical-align: top;
+		}
+
+		code {
+			font-size: medium;
+			font-weight: bold;
+		}
+
+		li {
+			margin-bottom: 6pt;
+		}
+
+		li ul {
+			margin-top: 6pt;
+		}
+
+		.section {
+			margin-left: 0.6cm;
+		}
+
+		.subsection {
+			margin-left: 0.6cm;
+		}
+
+		span.li  {display: list-item; margin-left: 0.6cm}
+
+		span.li2  {display: list-item; margin-left: 1.2cm}
+
+		td.truth_table { text-align: center; width: 1cm; vertical-align: middle; }
+
+		div.truth_table_container { display: inline-block; width: 5.5cm; vertical-align: top; text-align: center; }
+		td.truth_value { background-color: #dddddd; }
+
+		.sc0 {
+	}
+	.sc2 {
+		color: #1E9AE0;
+	}
+	.sc4 {
+		color: #FF3A83;
+	}
+	.sc5 {
+		color: #F6F080;
+	}
+	.sc6 {
+		color: #55E439;
+	}
+	.sc9 {
+		color: cyan;
+	}
+	.sc10 {
+		color: #FFAA00;
+	}
+	.sc11 {
+		color: #F8F8F8;
+	}
+	.sc16 {
+		color: #FFAA00;
+	}
+	</style>
+</head><body><h1 class="document_title">CAB202 Topic 7 – Introduction to Teensy</h1>
+<p>Lawrence Buckingham, Luis Mejias. Queensland University of Technology.</p>
+	
+    <h2><a name="_contents">Contents</a></h2>
+    
+  <ul>
+      <li> 
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#0" title="0">References</a>  </li>
+    
+      <li> 
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#1" title="1">What’s a Teensy?</a>  </li>
+    
+      <li> 
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#2" title="2">QUT Teensy Pew Pew</a>  </li>
+    
+      <li> 
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#3" title="3">First Program on the Teensy</a>
+  
+      
+  
+  
+      <ul>
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#4" title="4">Get things set up</a>          </li>
+          
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#5" title="5">Create (or in some other way get) a <code>C</code> source file</a>          </li>
+          
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#6" title="6">Create makefile; add target to makefile</a>          </li>
+          
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#7" title="7">Build and run</a>          </li>
+          </ul>
+  </li>
+    
+      <li> 
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#8" title="8">Library Support</a>
+  
+      
+  
+  
+      <ul>
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#9" title="9">Graphics</a>          </li>
+          </ul>
+  </li>
+    
+      <li> 
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#10" title="10">Digital Input and Output</a>
+  
+      
+  
+  
+      <ul>
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#11" title="11">Setting, Clearing, and Reading Bits</a>          </li>
+          
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#12" title="12">Digital Output: Turn on LED0</a>          </li>
+          
+          <li>
+    
+  <a href="https://blackboard.qut.edu.au/bbcswebdav/pid-8117929-dt-content-rid-26378076_1/courses/CAB202_19se2/CAB202-Topic07-Notes.html#13" title="13">Digital Input: Read switches</a></li>
+        </ul>
+  </li>
+</ul>
+
+	
+	
+	<hr>
+	<h2><a name="0"></a>Roadmap</h2>
+	<blockquote>
+	  <p>	This week:</p>
+	  <blockquote>
+	    <p><strong>7. Teensy – Introduction to Microcontrollers; Digital Input/Output; Bitwise operations.</strong></p>
+      </blockquote>
+	  <p>	    Still to come:</p>
+	  <blockquote>
+	    <p>8. LCD Display – sending digital signals to a device; directly controlling the LCD display        </p>
+	    <p>9. Debouncing, Timers and Interrupts – asynchronous programming.	    </p>
+	    <p>10. Serial Communication – communicating with another computer.	    </p>
+	    <p>11. Analogue to Digital Conversion; Pulse Width Modulation. </p>
+	  </blockquote>
+	  </blockquote>
+	<hr>
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="0"></a>References</h2>
+    <div class="section">
+		<p>Recommended reading:</p>
+
+		<ul><li><a href="http://libcat.library.qut.edu.au/search~S8?/aOualline%2C+Steve%2C/aoualline+steve/-3%2C-1%2C0%2CB/exact&amp;FF=aoualline+steve&amp;1%2C5%2C" target="_blank"> Practical C Programming, Chapter 11 Bit Operators</a></li>
+</ul>
+	</div>
+    <hr>
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="1"></a>What’s a Teensy?</h2>
+    <div class="section">
+		<p>According to the manufacturer’s web site, a Teensy is a “<em>… complete USB-based microcontroller development system, in a very small footprint, capable of implementing many types of projects.</em>”.
+			</p><ul><li><a href="https://www.pjrc.com/teensy/" target="_blank">https://www.pjrc.com/teensy/</a></li>
+</ul><p></p>
+<p>Teensy uses a range of ATMEL AVR microcontroller chips, which are packaged on a small development board with integrated USB connector for power and serial communication.</p>
+<p>Our board is Teensy 2.0:
+			<br>
+			
+    
+    <img src="./[WK 7] – Introduction to Teensy_files/teensy_2.jpg" width="406" height="228" alt=" Teensy 2 image from www.PJRC.com ">
+			<br>
+			The dark grey square in the middle of the board is an ATMega32U4 microcontroller.</p>
+<p>A microcontroller is a small computer with multiple components integrated into a single chip. It includes:
+			</p><ul><li>A microprocessor (CPU) containing: arithmetic and logic unit (ALU); program control system which fetches, decodes and executes instructions; and a bank of registers in which the ALU carries out operations.</li>
+<li>Memory: Flash storage which holds the program; EEPROM (electrically erasable programmable read-only memory); and RAM.</li>
+<li>Clock(s)</li>
+<li>Data connections: digital; analogue; network; memory cards.
+				<br>
+				
+    
+    <img src="./[WK 7] – Introduction to Teensy_files/Microcontroller.png" width="400" height="383" alt=" Generic microcontroller block diagram "></li>
+</ul><p></p>
+
+	</div>
+    <hr>
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="2"></a>QUT Teensy Pew Pew</h2>
+    <div class="section">
+		<p><em>This section incorporates material created by Dr Luis Mejias.</em></p>
+<p>TeensyPewPew is QUT designed and manufactured. A Teensy 2 board is connected to a range of switches, lights, potentiometers and a 84×48 pixel monochrome Nokia5110 LCD display.</p>
+<p>
+    
+    <img src="./[WK 7] – Introduction to Teensy_files/TeensyPewPew.png" alt=""></p>
+<p>The ATMega32U4 chip has three 8-pin digital IO ports.
+			</p><ul><li>Ports B, D, and F.</li>
+<li>Each port has 8 data pins, which map to a bank of 8-bit storage locations in RAM.</li>
+<li>Each port is bidirectional – input or output.</li>
+<li>Each pin within a port is independently configurable as either input or output.
+				<ul><li>How they are configured depends on the hardware they are connected to.</li>
+</ul></li>
+</ul><p></p>
+<p>Ports C and E also exist but only limited number of pins are available.</p>
+<p>Rigorous definitions of pin assignments, memory addresses, and programming notes are covered in the ATMega32U4 Data Sheet. 
+			</p><ul><li><a href="https://blackboard.qut.edu.au/webapps/blackboard/content/listContentEditable.jsp?content_id=_7298702_1&amp;course_id=_137648_1" target="_blank"> Microcontroller Resources on Blackboard</a></li>
+</ul><p></p>
+
+	</div>
+    <hr>
+
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="3"></a>First Program on the Teensy</h2>
+    <div class="section">
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="4"></a>Get things set up</h3>
+    <div class="subsection">
+			<ol><li>Windows users: <b>do not</b> uninstall Cygwin. You still need it.</li>
+<li>Install the <code>avr-gcc</code> cross-compiler, using instructions in Tutorial 7 worksheet.</li>
+<li>Download the <code>cab202_teensy</code> archive from Topic 7 Learning Resources in Blackboard.
+				<ul><li>If you have already downloaded an earlier version of this archive, please replace it with the latest version.</li>
+</ul></li>
+<li>Extract the folders from the archive and place the <code>cab202_teensy</code> folder next to ZDK in your file system.</li>
+<li>Open a terminal window; <code>cd</code> to the <code>cab202_teensy</code> folder; run <code>make&nbsp;rebuild</code>.</li>
+<li>If all goes well, you should see a file called <code>libcab202_teensy.a</code> generated. This is the Teensy equivalent of the ZDK.</li>
+</ol>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="5"></a>Create (or in some other way get) a <code>C</code> source file</h3>
+    <div class="subsection">
+			<p>Several example programs are provided in the present document; use <code>teensy_hello.c</code>:</p>
+<p><em>You will include line 11 in the start-up code of every program you write</em>. This is required to ensure that the CPU clock speed matches the clock speed used when compiling your code with the makefile. If the CPU speed is wrong, your program may not work correctly.</p>
+
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;avr/io.h&gt; 
+</span><span class="sc10">#include &lt;avr/interrupt.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span><span class="sc10">#include &lt;cpu_speed.h&gt;
+</span>
+<span class="sc10">#include &lt;graphics.h&gt;
+</span><span class="sc10">#include &lt;macros.h&gt;
+</span>
+<span class="sc10">void</span> <span class="sc11">setup</span>(<span class="sc10">void</span>) {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+	<span class="sc11">lcd_init</span>(<span class="sc10">LCD_DEFAULT_CONTRAST</span>);
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>(<span class="sc10">void</span>) {
+	<span class="sc9">char</span> *<span class="sc11">hello</span> = <span class="sc6">"Hello Teensy!"</span>;
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">draw_string</span>(<span class="sc4">0</span>, <span class="sc4">0</span>, <span class="sc11">hello</span>, <span class="sc11">FG_COLOUR</span>);
+	<span class="sc11">draw_string</span>(<span class="sc4">0</span>, <span class="sc4">8</span>, <span class="sc11">hello</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_string</span>(<span class="sc4">0</span>, <span class="sc4">16</span>, <span class="sc11">hello</span>, <span class="sc11">FG_COLOUR</span>);
+	<span class="sc11">draw_string</span>(<span class="sc4">0</span>, <span class="sc4">24</span>, <span class="sc11">hello</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_string</span>(<span class="sc4">0</span>, <span class="sc4">32</span>, <span class="sc11">hello</span>, <span class="sc11">FG_COLOUR</span>);
+	<span class="sc11">draw_string</span>(<span class="sc4">0</span>, <span class="sc4">40</span>, <span class="sc11">hello</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+		_<span class="sc11">delay_ms</span>(<span class="sc4">10</span>);
+	}
+}
+</pre>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="6"></a>Create makefile; add target to makefile</h3>
+    <div class="subsection">
+			<p>A <code>makefile</code> is a plain text document which contains instructions for the <code>make</code> program.
+				</p><ul><li><code>make</code> is a general purpose tool for managing projects which consist of a collection of inter-dependent documents.</li>
+<li><code>make</code> automates the build process.</li>
+<li><code>make</code> is the most reliable way to build your Teensy programs.</li>
+<li><code>make</code> is good. Learn <code>make</code>. Use <code>make</code>.</li>
+</ul><p></p>
+<p>The following <code>makefile</code> has been designed for use with the CAB202 Teensy Graphics library.
+				</p><ul><li>It contains pre-defined targets for all the examples in this document.</li>
+<li>Each target is the name of a <code>.hex</code> file. Teensy executable programs are stored in <code>.hex</code> files.</li>
+<li>We need to provide a <code>C</code> source file to match each of these targets, or modify the targets so they match our available source files.</li>
+<li>For example, the target <code>teensy_hello.hex</code> will be compiled from a source file called <code>teensy_hello.c</code>. If  <code>teensy_hello.c</code> is not found, compilation will fail.</li>
+</ul><p></p>
+
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"># CAB202 Teensy Makefile
+# Lawrence Buckingham, September 2017.
+# Queensland University of Technology.
+
+# Replace these targets with your target (hex file) name, including the .hex part.
+
+TARGETS = \
+	teensy_hello.hex \
+	teensy_lines.hex \
+	teensy_pixels.hex \
+	turn_on_led.hex
+
+# Set the name of the folder containing libcab202_teensy.a
+
+CAB202_TEENSY_FOLDER = ../cab202_teensy 
+
+# ---------------------------------------------------------------------------
+#	Leave the rest of the file alone.
+# ---------------------------------------------------------------------------
+
+all: $(TARGETS)
+
+TEENSY_LIBS = -lcab202_teensy -lprintf_flt -lm 
+TEENSY_DIRS =-I$(CAB202_TEENSY_FOLDER) -L$(CAB202_TEENSY_FOLDER)
+TEENSY_FLAGS = \
+	-std=gnu99 \
+	-mmcu=atmega32u4 \
+	-DF_CPU=8000000UL \
+	-funsigned-char \
+	-funsigned-bitfields \
+	-ffunction-sections \
+	-fpack-struct \
+	-fshort-enums \
+	-Wall \
+	-Werror \
+	-Wl,-u,vfprintf \
+	-Os 
+
+clean:
+	for f in $(TARGETS); do \
+		if [ -f $$f ]; then rm $$f; fi; \
+		if [ -f $$f.elf ]; then rm $$f.elf; fi; \
+		if [ -f $$f.obj ]; then rm $$f.obj; fi; \
+	done
+
+rebuild: clean all
+
+%.hex : %.c
+	avr-gcc $&lt; $(TEENSY_FLAGS) $(TEENSY_DIRS) $(TEENSY_LIBS) -o $@.obj
+	avr-objcopy -O ihex $@.obj $@
+</pre>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="7"></a>Build and run</h3>
+    <div class="subsection">
+			<p>After running <code>make</code> the target(s) should be created.</p>
+<p>Use the Teensy USB loader to transfer the program to your Teensy.</p>
+<p>When you reboot, the <code>.hex</code> file is downloaded to Teensy and the program starts.</p>
+
+		</div> 
+
+	</div>
+    <hr>
+
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="8"></a>Library Support</h2>
+    <div class="section">
+		
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="9"></a>Graphics</h3>
+    <div class="subsection">
+			<p>The Teensy graphics library in <code>cab202_teensy/graphics.h</code> is a bit simpler than <code>ZDK/cab202_graphics.h</code>.
+				</p><ul><li>The LCD display connected to our Teensy is a monochrome</li>
+<li>Where ZDK works with characters, in Teensy we operate at pixel level.</li>
+<li>Two colours are available for drawing: <code>FG_COLOUR</code> and <code>BG_COLOUR</code>.</li>
+<li>We use one bit per pixel to encode image data: <code>FG_COLOUR&nbsp;==&nbsp;1</code>, and <code>BG_COLOUR&nbsp;==&nbsp;0</code>.</li>
+</ul><p></p>
+<p>Similar to ZDK, we use buffered graphics.
+				</p><ul><li>Drawing operations update an off-screen memory region, which is copied to the display by calling <code>show_screen</code>.</li>
+<li>The screen buffer is declared in <code>cab202_teensy/graphics.h</code>, and defined in <code>cab202_teensy/graphics.c</code>.</li>
+<li>The buffer occupies <code>84×48÷8&nbsp;==&nbsp;504</code> bytes.</li>
+<li>The detailed layout and use of the screen buffer will be covered in Topic 8.</li>
+</ul><p></p>
+
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc2">/*
+ *  CAB202 Teensy Library: 'cab202_teensy'
+ *	graphics.h
+ *
+ *	B.Talbot, September 2015
+ *  L.Buckingham, September 2017
+ *	Queensland University of Technology
+ */</span>
+<span class="sc10">#ifndef GRAPHICS_H_
+</span><span class="sc10">#define GRAPHICS_H_
+</span>
+<span class="sc10">#include &lt;stdint.h&gt;
+</span>
+<span class="sc10">#include "ascii_font.h"
+</span><span class="sc10">#include "lcd.h"
+</span>
+<span class="sc2">/*
+ *  Size of the screen_buffer, measured in bytes. There are LCD_X
+ *	columns, and LCD_Y rows of pixels. Pixels are packed vertically
+ *	into bytes, with 8 pixels in each byte.
+ */</span>
+<span class="sc10">#define LCD_BUFFER_SIZE (LCD_X * (LCD_Y / 8))
+</span>
+<span class="sc2">/**
+ *	Enumerated type to define colours. We have two colours:
+ *	FG_COLOUR - foreground.
+ *	BG_COLOUR - background.
+ */</span>
+<span class="sc5">typedef</span> <span class="sc5">enum</span> <span class="sc9">colour_t</span> {
+	<span class="sc11">BG_COLOUR</span> = <span class="sc4">0</span>,
+	<span class="sc11">FG_COLOUR</span> = <span class="sc4">1</span>
+} <span class="sc9">colour_t</span>;
+
+<span class="sc2">/*
+ *  Array of bytes used as screen buffer.
+ *  (accessible from any file that includes graphics.h)
+ */</span>
+<span class="sc5">extern</span> <span class="sc9">uint8_t</span> <span class="sc11">screen_buffer</span>[<span class="sc10">LCD_BUFFER_SIZE</span>];
+
+<span class="sc2">/*
+ *  Copy the contents of the screen buffer to the LCD.
+ *	This is the only function that interfaces with the LCD hardware
+ *  (sends entire current buffer to LCD screen)
+ */</span>
+<span class="sc10">void</span> <span class="sc11">show_screen</span>(<span class="sc10">void</span>);
+
+<span class="sc2">/*
+ * Clear the screen buffer (all pixels set to BG_COLOUR).
+ */</span>
+<span class="sc10">void</span> <span class="sc11">clear_screen</span>(<span class="sc10">void</span>);
+
+<span class="sc2">/**
+ *	Draw (or erase) a designated pixel in the screen buffer.
+ *
+ *	Parameters:
+ *		x - The horizontal position of the pixel. The left edge of the screen
+ *			is at x=0; the right edge is at (LCD_X-1).
+ *		y - The vertical position of the pixel. The top edge of the screen is
+ *			at y=0; the bottom edge is at (LCD_Y-1).
+ *		colour - The colour, FG_COLOUR or BG_COLOUR.
+ */</span>
+<span class="sc10">void</span> <span class="sc11">draw_pixel</span>(<span class="sc9">int</span> <span class="sc11">x</span>, <span class="sc9">int</span> <span class="sc11">y</span>, <span class="sc9">colour_t</span> <span class="sc11">colour</span>);
+
+<span class="sc2">/**
+ *	Draw a line in the screen buffer.
+ *
+ *	Parameters:
+ *		x1 - The horizontal position of the start point of the line.
+ *		y1 - The vertical position of the start point of the line.
+ *		x2 - The horizontal position of the end point of the line.
+ *		y2 - The vertical position of the end point of the line.
+ *		colour - The colour, FG_COLOUR or BG_COLOUR.
+ */</span>
+<span class="sc10">void</span> <span class="sc11">draw_line</span>(<span class="sc9">int</span> <span class="sc11">x1</span>, <span class="sc9">int</span> <span class="sc11">y1</span>, <span class="sc9">int</span> <span class="sc11">x2</span>, <span class="sc9">int</span> <span class="sc11">y2</span>, <span class="sc9">colour_t</span> <span class="sc11">colour</span>);
+
+<span class="sc2">/**
+ *	Render one of the printable ASCII characters into the screen buffer.
+ *
+ *	Parameters:
+ *		x - The horizontal position of the top-left corner of the glyph.
+ *		y - The vertical position of the top-left corner of the glyph.
+ *		character - The (ASCII code of the) character to render. Valid values
+ *			range from 0x20 == 32 == 'SPACE' to 0x7f == 127 == 'BACKSPACE'.
+ *		colour - The colour, FG_COLOUR or BG_COLOUR. If colour is BG_COLOUR,
+ *			the character is rendered as an inverse video block.
+ */</span>
+<span class="sc10">void</span> <span class="sc11">draw_char</span>(<span class="sc9">int</span> <span class="sc11">top_left_x</span>, <span class="sc9">int</span> <span class="sc11">top_left_y</span>, <span class="sc9">char</span> <span class="sc11">character</span>, <span class="sc9">colour_t</span> <span class="sc11">colour</span>);
+
+<span class="sc2">/**
+ *	Render a string of printable ASCII characters into the screen buffer.
+ *
+ *	Parameters:
+ *		x - The horizontal position of the top-left corner of the displayed
+ *			text.
+ *		y - The vertical position of the top-left corner of the displayed
+ *			text.
+ *		text - A string to render. Valid values for each element range from 
+ *			0x20 == 32 to 0x7f == 127.
+ *		colour - The colour, FG_COLOUR or BG_COLOUR. If colour is BG_COLOUR,
+ *			the text is rendered as an inverse video block.
+ */</span>
+<span class="sc10">void</span> <span class="sc11">draw_string</span>(<span class="sc9">int</span> <span class="sc11">top_left_x</span>, <span class="sc9">int</span> <span class="sc11">top_left_y</span>, <span class="sc9">char</span> *<span class="sc11">text</span>, <span class="sc9">colour_t</span> <span class="sc11">colour</span>);
+
+<span class="sc10">#endif /* GRAPHICS_H_ */
+</span></pre>
+		<p>When you examine the <code>.h</code> file you will notice a new numeric data type: <code>uint8_t</code>.</p>
+			<ul><li>This represents an unsigned 8-bit integer. Also known as a <code>byte</code>.</li>
+<li><code>uint8_t</code> permits values ranging from 0 to 255 inclusive.</li>
+</ul>
+			<p>We also define an enumerated type: <code>colour_t</code>.</p>
+			<ul><li>This represents the values <code>FG_COLOUR</code> and <code>BG_COLOUR</code> – foreground and background colour, respectively.</li>
+</ul>
+			<p>To see how to render pixels to the screen, examine <code>teensy_pixels.c</code>:</p>
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;stdlib.h&gt;
+</span><span class="sc10">#include &lt;avr/io.h&gt; 
+</span><span class="sc10">#include &lt;avr/interrupt.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span><span class="sc10">#include &lt;cpu_speed.h&gt;
+</span>
+<span class="sc10">#include &lt;graphics.h&gt;
+</span><span class="sc10">#include &lt;macros.h&gt;
+</span>
+<span class="sc10">#define N 200
+</span><span class="sc9">int</span> <span class="sc11">x</span>[<span class="sc10">N</span>];
+<span class="sc9">int</span> <span class="sc11">y</span>[<span class="sc10">N</span>];
+<span class="sc9">int</span> <span class="sc11">current_pixel</span> = <span class="sc4">0</span>;
+
+<span class="sc10">void</span> <span class="sc11">init_pixels</span>(<span class="sc10">void</span>) {
+	<span class="sc5">for</span> ( <span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc10">N</span>; <span class="sc11">i</span>++ ) {
+		<span class="sc11">x</span>[<span class="sc11">i</span>] = <span class="sc11">rand</span>() % <span class="sc10">LCD_X</span>;
+		<span class="sc11">y</span>[<span class="sc11">i</span>] = <span class="sc11">rand</span>() % <span class="sc10">LCD_Y</span>;
+	}
+}
+
+<span class="sc10">void</span> <span class="sc11">draw_pixels</span>(<span class="sc10">void</span>) {
+	<span class="sc5">for</span> ( <span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc10">N</span>; <span class="sc11">i</span>++ ) {
+		<span class="sc11">draw_pixel</span>(<span class="sc11">x</span>[<span class="sc11">i</span>], <span class="sc11">y</span>[<span class="sc11">i</span>], <span class="sc11">FG_COLOUR</span>);
+	}
+}
+
+<span class="sc10">void</span> <span class="sc11">update_pixels</span>() {
+	<span class="sc11">x</span>[<span class="sc11">current_pixel</span>] = <span class="sc11">rand</span>() % <span class="sc10">LCD_X</span>;
+	<span class="sc11">y</span>[<span class="sc11">current_pixel</span>] = <span class="sc11">rand</span>() % <span class="sc10">LCD_Y</span>;
+	<span class="sc11">current_pixel</span> = (<span class="sc11">current_pixel</span> + <span class="sc4">1</span>) % <span class="sc10">N</span>;
+}
+
+<span class="sc10">void</span> <span class="sc11">setup</span>(<span class="sc10">void</span>) {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+	<span class="sc11">lcd_init</span>(<span class="sc10">LCD_DEFAULT_CONTRAST</span>);
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">init_pixels</span>();
+	<span class="sc11">draw_pixels</span>();
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>(<span class="sc10">void</span>) {
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">update_pixels</span>();
+	<span class="sc11">draw_pixels</span>();
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+		_<span class="sc11">delay_ms</span>(<span class="sc4">10</span>);
+	}
+}
+</pre>
+		<p>To see how to render lines to the screen, examine <code>teensy_lines.c</code>:</p>
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;avr/io.h&gt; 
+</span><span class="sc10">#include &lt;avr/interrupt.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span><span class="sc10">#include &lt;cpu_speed.h&gt;
+</span>
+<span class="sc10">#include &lt;graphics.h&gt;
+</span><span class="sc10">#include &lt;macros.h&gt;
+</span>
+<span class="sc10">void</span> <span class="sc11">setup</span>(<span class="sc10">void</span>) {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+	<span class="sc11">lcd_init</span>(<span class="sc10">LCD_DEFAULT_CONTRAST</span>);
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>(<span class="sc10">void</span>) {
+	<span class="sc5">static</span> <span class="sc9">double</span> <span class="sc11">fraction</span> = <span class="sc4">0</span><span class="sc4">.0</span>;
+	<span class="sc11">clear_screen</span>();
+
+	<span class="sc5">for</span> ( <span class="sc9">int</span> <span class="sc11">y</span> = <span class="sc4">0</span>; <span class="sc11">y</span> &lt; <span class="sc10">LCD_Y</span>; <span class="sc11">y</span>++ ) {
+		<span class="sc11">draw_line</span>(<span class="sc4">0</span>, <span class="sc11">y</span>, <span class="sc10">LCD_X</span> - <span class="sc4">1</span>, <span class="sc11">y</span>, <span class="sc11">FG_COLOUR</span>);
+	}
+
+	<span class="sc9">int</span> <span class="sc11">x1</span> = <span class="sc10">LCD_X</span> * <span class="sc11">fraction</span>;
+	<span class="sc9">int</span> <span class="sc11">x2</span> = <span class="sc10">LCD_X</span> - <span class="sc11">x1</span>;
+	<span class="sc9">int</span> <span class="sc11">y1</span> = <span class="sc10">LCD_Y</span> * <span class="sc11">fraction</span>;
+	<span class="sc9">int</span> <span class="sc11">y2</span> = <span class="sc10">LCD_Y</span> - <span class="sc11">y1</span>;
+
+	<span class="sc11">fraction</span> += <span class="sc4">0</span><span class="sc4">.01</span>;
+
+	<span class="sc5">if</span> ( <span class="sc11">fraction</span> &gt;= <span class="sc4">0</span><span class="sc4">.5</span> ) <span class="sc11">fraction</span> = <span class="sc4">0</span><span class="sc4">.0</span>;
+
+	<span class="sc11">draw_line</span>(<span class="sc11">x1</span>, <span class="sc11">y1</span>, <span class="sc11">x2</span>, <span class="sc11">y1</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_line</span>(<span class="sc11">x1</span>, <span class="sc11">y2</span>, <span class="sc11">x2</span>, <span class="sc11">y2</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_line</span>(<span class="sc11">x1</span>, <span class="sc11">y1</span>, <span class="sc11">x1</span>, <span class="sc11">y2</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_line</span>(<span class="sc11">x2</span>, <span class="sc11">y1</span>, <span class="sc11">x2</span>, <span class="sc11">y2</span>, <span class="sc11">BG_COLOUR</span>);
+
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+		<span class="sc2">// _delay_ms(10);</span>
+	}
+}
+</pre>
+		</div> 
+
+		 
+	</div>
+    <hr>
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="10"></a>Digital Input and Output</h2>
+    <div class="section">
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="11"></a>Setting, Clearing, and Reading Bits</h3>
+    <div class="subsection">
+			<p>We saw earlier that the 8-pin physical IO ports are connected to memory locations, and that each pin can be independently configured as input or output.</p>
+<p>Each physical IO port maps to a set of three bytes in RAM. These locations are called I/O Registers.</p>
+<p>Consider port B:
+				</p><ul><li>We use a variable called <code>DDRB</code> – the <em>data direction register</em> – to specify whether each physical pin is to be used as input or output.</li>
+<li>We use a variable called <code>PORTB</code> – the <em>output register</em> for port B – to send data to the physical pins that are configured for output.</li>
+<li>We use a variable called <code>PINB</code> – the <em>input register</em> for port B – to get signals from physical pins that are configured for input.</li>
+<li>NB: <code>PORTB</code> <em>is not a port</em>, it’s a register. <code>PINB</code> <em>is not a pin</em>, it’s a register.</li>
+</ul><p></p>
+<p>Similarly for ports D and F, we have (<code>DDRD</code>, <code>PORTD</code>, <code>PIND</code>) and (<code>DDRF</code>, <code>PORTF</code>, <code>PINF</code>).</p>
+<p>See page 66 of the ATMega32U4 data sheet for a formal detailed coverage of this topic.</p>
+<p>To configure physical pin <em>i</em> of port B as an output, we <em>set</em> bit <em>i</em> of <code>DDRB</code> (that is, we make that bit have a value of 1). Here <em>i</em> is between 0 and 7 inclusive.
+				</p><ul><li><code>cab202_teensy/macros.h</code> contains helpful macros for this.</li>
+<li>For example, use <code>SET_BIT(DDRB,&nbsp;i)</code> to set bit <em>i</em> of the <code>DDRB</code> register.</li>
+<li><code>SET_BIT</code> works with any register.</li>
+</ul><p></p>
+<p>To configure physical pin <em>i</em> of port B as an input, we <em>clear</em> bit <em>i</em> of <code>DDRB</code> (making it have a value of 0). 
+				</p><ul><li>Use <code>CLEAR_BIT(DDRB,&nbsp;i)</code> to clear bit <em>i</em> of the <code>DDRB</code> register.</li>
+<li><code>CLEAR_BIT</code> works with any register.</li>
+</ul><p></p>
+<p>To switch on pin <em>i</em> of port B when configured for output, we set bit <em>i</em> of <code>PORTB</code>.
+				</p><ul><li><code>SET_BIT(PORTB,&nbsp;i)</code> will do this.</li>
+</ul><p></p>
+<p>To read the value of pin <em>i</em> of port B when configured for input, we must extract bit <em>i</em> from <code>PINB</code>.
+				</p><ul><li><code>BIT_VALUE(PINB,&nbsp;i)</code> gets the status of the physical pin.</li>
+<li><code>BIT_IS_SET(PINB,&nbsp;i)</code> asks the question: “Is bit <em>i</em> of register <code>PINB</code> set?” This is usually more useful.</li>
+</ul>
+			
+			<p></p>
+
+		</div>
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="12"></a>Digital Output: Turn on LED0</h3>
+    <div class="subsection">
+			<p>In this exercise, we turn on the left-hand LED as soon as the program starts. To do this, we need to:
+				</p><ul><li>Find out which pin the LED is connected to.</li>
+<li>Configure that pin as an output so we can turn the LED on.</li>
+<li>Turn the LED on.</li>
+</ul><p></p>
+<p>Looking on the Teensy, we see that the left LED is LED0. Consulting the TeensyPewPew schematic diagram:
+				<br>
+				
+    
+    <img src="./[WK 7] – Introduction to Teensy_files/TeensyPinout.png" alt=" Teensy pin assignments">
+				<br>
+				we find that LED0 is connected to B2: pin 2 of port B.</p>
+<p>Therefore, we will need to set bit 2 of DDRB to configure it for output, and we will also need to set bit 2 of PORTB to turn it on.</p>
+<p>This can be done with the following program, <code>turn_on_led.c</code>:</p>
+
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc2">// Include the AVR IO library</span>
+<span class="sc10">#include &lt;avr/io.h&gt;
+</span>
+<span class="sc2">// Include the CPU Speed information</span>
+<span class="sc10">#include "cpu_speed.h"
+</span><span class="sc10">#include "macros.h"
+</span>
+<span class="sc10">void</span> <span class="sc11">setup</span>() {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+
+	<span class="sc2">// Enable left LED for output</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">DDRB</span>, <span class="sc4">2</span>);
+
+	<span class="sc2">// Turn the LED on</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc4">2</span>);
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>() {
+	<span class="sc2">// Do nothing this time.</span>
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+	}
+}
+</pre>
+		</div>
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="13"></a>Digital Input: Read switches</h3>
+    <div class="subsection">
+			<p>In this exercise, we write a program that turns on the left-hand LED when the left button is clicked, and turns it off when the right button is clicked.</p>
+<p>To do this, we must determine what pin each of the buttons is connected to. Which is a bit messy, because the schematic contains apparently contradictory labels.</p>
+<p>Looking at Teensy, we see that the left button is labelled <code>SW2</code> and the right button is labelled <code>SW3</code>.
+				<br>
+				
+    
+    <img src="./[WK 7] – Introduction to Teensy_files/Switches.png" alt=" Teensy switch assignments">
+				<br>
+				We find that <code>SW2</code> morphs into <code>SW1</code>, which is connected to <code>F6</code>. <code>SW3</code> turns into <code>SW2</code>, which is connected to <code>F5</code>.</p>
+<p>During the setup phase, we will have to clear bits 6 and 5 of <code>DDRF</code>.</p>
+<p>In the process phase, we must ask if each button is pressed, and if so, turn the light on or off. This can be done with <code>BIT_IS_SET</code>.</p>
+<p>Clearing bit 2 of the <code>PORTB</code> will turn the light off.</p>
+<p>The final program is <code>turn_on_off_led.c</code>:</p>
+
+			<pre style="line-height: 1.25; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc2">// Include the AVR IO library</span>
+<span class="sc10">#include &lt;avr/io.h&gt;
+</span>
+<span class="sc2">// Include the CPU Speed information</span>
+<span class="sc10">#include "cpu_speed.h"
+</span><span class="sc10">#include "macros.h"
+</span>
+<span class="sc10">void</span> <span class="sc11">setup</span>() {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+
+	<span class="sc2">// Output to left LED</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">DDRB</span>, <span class="sc4">2</span>);
+
+	<span class="sc2">// Input from the left and right buttons</span>
+	<span class="sc11">CLEAR_BIT</span>(<span class="sc11">DDRF</span>, <span class="sc4">5</span>);
+	<span class="sc11">CLEAR_BIT</span>(<span class="sc11">DDRF</span>, <span class="sc4">6</span>);
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>() {
+	<span class="sc2">// If left button is pressed, Turn on left LED.</span>
+	<span class="sc5">if</span> ( <span class="sc11">BIT_IS_SET</span>(<span class="sc11">PINF</span>, <span class="sc4">6</span>) ) {
+		<span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc4">2</span>);
+	}
+
+	<span class="sc2">// Otherwise, if right button is pressed, turn off left LED.</span>
+	<span class="sc5">else</span> <span class="sc5">if</span> ( <span class="sc11">BIT_IS_SET</span>(<span class="sc11">PINF</span>, <span class="sc4">5</span>) ) {
+		<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc4">2</span>);
+	}
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+	}
+}
+</pre>
+		</div>
+	</div>
+    <hr>
+
+	<p style="text-align:center"><em>The End</em></p>
+	<hr>
+
+
+</body></html>

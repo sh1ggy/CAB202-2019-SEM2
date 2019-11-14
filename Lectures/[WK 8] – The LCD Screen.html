@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>CAB202 Topic 8 – LCD</title>
+
+	<style type="text/css">
+		
+			body {
+				max-width: 50em;
+				/* font-family: sans-serif; */
+				margin: auto;
+				line-height: 1.4em;
+				background-color: #F1F1F1;
+			}
+		
+
+		.indent {
+			margin-left: 0.6cm;
+		}
+
+		.codeblock {
+			font-size: +1;
+			font-family: monospace;
+			font-weight: bold;
+			background-color: #303030;
+			color: #dcdcdc;
+			/* font-size: large; */
+		}
+
+		.codeDiv {
+			overflow: scroll;
+			border: 1px solid gray;
+		}
+
+		pre {
+			border: 1px solid gray;
+			padding: 6pt;
+			width: 100%;
+		}
+
+		textarea {
+			margin-top: 6pt;
+		}
+
+		td {
+			/* width: 4in; */
+			vertical-align: top;
+		}
+
+		code {
+			font-size: medium;
+			font-weight: bold;
+		}
+
+		li {
+			margin-bottom: 6pt;
+		}
+
+		li ul {
+			margin-top: 6pt;
+		}
+
+		.section {
+			margin-left: 0.6cm;
+		}
+
+		.subsection {
+			margin-left: 0.6cm;
+		}
+
+		span.li  {display: list-item; margin-left: 0.6cm}
+
+		span.li2  {display: list-item; margin-left: 1.2cm}
+
+		td.truth_table { text-align: center; width: 1cm; vertical-align: middle; }
+
+		div.truth_table_container { display: inline-block; width: 5.5cm; vertical-align: top; text-align: center; }
+		td.truth_value { background-color: #dddddd; }
+
+		.sc0 {
+	}
+	.sc2 {
+		color: #1E9AE0;
+	}
+	.sc4 {
+		color: #FF3A83;
+	}
+	.sc5 {
+		color: #F6F080;
+	}
+	.sc6 {
+		color: #55E439;
+	}
+	.sc9 {
+		color: cyan;
+	}
+	.sc10 {
+		color: #FFAA00;
+	}
+	.sc11 {
+		color: #F8F8F8;
+	}
+	.sc16 {
+		color: #FFAA00;
+	}
+	</style>
+</head><body><h1 class="document_title">CAB202 Topic 8 – LCD</h1>
+<p>Luis Mejias &amp; Lawrence Buckingham, Queensland University of Technology.</p>
+	
+    <h2><a name="_contents">Contents</a></h2>
+    
+	<ul>
+			<li> 
+	<a href="#roadmap" title="roadmap">Roadmap</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#format" title="format">References</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#lcd_display" title="lcd_display">The PCD8544 LCD controller/driver</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#connections" title="connections">LCD Interface (From the LCD Point of View)</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#connections_from_teensy" title="connections_from_teensy">LCD Interface from the Teensy Point of View</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#serial_data_transmission" title="serial_data_transmission">Transmitting Data From Teensy to LCD</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#lcd_programming_model" title="lcd_programming_model">Programming the LCD</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#pixels" title="pixels">Pixel data storage</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#ex1" title="ex1">Case study 1: <tt>lcd_init</tt></a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#ex2" title="ex2">Worked example 2: Changing Contrast</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+			<li> 
+	<a href="#ex3" title="ex3">Worked example 3: Direct screen write to the LCD</a>
+	
+			
+	
+	
+	
+	
+	</li>
+		
+    	</ul>
+
+	<hr>
+	
+	
+
+    
+		<h2><a name="roadmap">Roadmap</a></h2>
+		<div class="section">
+		<p>Last week:</p>
+		<ol start="7"><li>Teensy – Introduction to Microcontrollers; Digital Input/Output; Bitwise operations.</li>
+</ol>
+		<p>This week:</p>
+		<ol start="8"><li><b>LCD Display – sending digital signals to a device; directly controlling the LCD display.</b></li>
+</ol>
+		<p>Still to come:</p>
+		<ol start="9">
+		  <li>Debouncing, Timers and Interrupts – asynchronous programming.</li>
+		  <li>Serial Communication – communicating with another computer.</li>
+<li>Analogue to Digital Conversion; Pulse Width Modulation.</li>
+<li>TBA.</li>
+</ol>
+		</div>
+		<hr>
+	
+	
+
+    
+		<h2><a name="format">References</a></h2>
+		<div class="section">
+		<p>Recommended reading:</p>
+
+		<ul><li>Blackboard&#8594;Learning Resources&#8594;Microcontrollers&#8594;Nokia5110-LCD-Screen.pdf (PCD8544 Data Sheet).</li>
+<li>Blackboard&#8594;Learning Resources&#8594;Microcontrollers&#8594;TeensyPewPew Schematic.pdf</li>
+</ul>
+	</div>
+		<hr>
+	
+	
+
+    
+		<h2><a name="lcd_display">The PCD8544 LCD controller/driver</a></h2>
+		<div class="section">
+		<p>
+    
+    <img src="[WK%208]%20%E2%80%93%20The%20LCD%20Screen_files/LCD_Front_10168-04a.png" alt="Front view of LCD" width="300" height="300">&nbsp;
+    
+    <img src="[WK%208]%20%E2%80%93%20The%20LCD%20Screen_files/LCD_Back_10168-03a.png" alt="Back view of LCD" width="300" height="300"></p>
+
+		<ul><li><em>Refer: LCD data sheet, p3</em>.</li>
+<li>Low-power LCD controller.</li>
+<li>48×84 pixel monochrome display.</li>
+<li>Build-in back-light.</li>
+<li>Interfaces to microcontrollers via serial bus interface.
+			<ul><li>Data flow is strictly unidirectional, from microcontroller to LCD.</li>
+</ul></li>
+<li>The controller has a small amount of RAM which holds the pixel data for display.</li>
+</ul>
+	</div>
+		<hr>
+	
+	
+
+    
+		<h2><a name="connections">LCD Interface (From the LCD Point of View)</a></h2>
+		<div class="section">
+		<p style="margin-left: 0.5in;">
+    
+    <img src="[WK%208]%20%E2%80%93%20The%20LCD%20Screen_files/LcdPinout.png" alt="LCD pin-out diagram" width="444" height="568"></p>
+		<p>LCD has 8 externally accessible pins</p>
+		<ul><li>6 of which are used to control the peripheral.</li>
+<li>the other two are the power connections: VCC and GND.</li>
+<li><em>Refer: LCD data sheet, p5</em>.</li>
+</ul>
+		<p>Pins we use:</p>
+		<ol><li><strong>SCE</strong> – Chip Select Pin
+			<ul><li>Tells the LCD there is incoming data.</li>
+<li>Active when 0.</li>
+</ul></li>
+<li><strong>RST</strong> – Reset Pin
+			<ul><li>Resets the LCD to its default configuration when switched to 0.</li>
+<li>To resume operation switch back to 1.</li>
+<li>The old standby: “turn it off and on again”.</li>
+</ul></li>
+<li><strong>D/C</strong> – Data/Command Pin
+			<ul><li>0 means incoming data must be interpreted as a command.</li>
+<li>1 means incoming data is pixel data to be displayed.</li>
+<li><em>Also called DC</em>.</li>
+</ul></li>
+<li><strong>DIN</strong> – Serial Data Input Pin
+			<ul><li>Data is transmitted to the LCD one bit at a time over this pin.</li>
+<li>Data is interpreted as pixels if D/C == 1.</li>
+<li>Data is interpreted as command if D/C == 0.</li>
+<li><em>Also called MOSI, SDIN</em>.</li>
+</ul></li>
+<li><strong>SCK</strong> – Serial Clock Pin
+			<ul><li>Toggled from 0 to 1 during data transfer to signal that a bit is available on DIN.</li>
+<li><em>Also called SCLK</em>.</li>
+</ul></li>
+<li><strong>LED</strong> – Back-light
+			<ul><li>When 1, turns on the back-light LED.</li>
+</ul></li>
+</ol>
+	</div>
+		<hr>
+
+	
+	
+
+    
+		<h2><a name="connections_from_teensy">LCD Interface from the Teensy Point of View</a></h2>
+		<div class="section">
+		<p style="margin-left: 0.5in;">
+    
+    <img src="[WK%208]%20%E2%80%93%20The%20LCD%20Screen_files/TeensyPinout.png" alt="Teensy Pin-out Diagram" width="607" height="414"></p>
+		<p>At the Teensy, the LCD pin mappings are:</p>
+		<ul><li>Port C, pin 7 &#8594; LCD backlight.</li>
+<li>Port F, pin 7 &#8594; LCD Serial Clock pin.</li>
+<li>Port B, pin 6 &#8594; LCD Serial Data Input pin.</li>
+<li>Port B, pin 5 &#8594; LCD Serial Data/Command pin.</li>
+<li>Port B, pin 4 &#8594; LCD Reset pin.</li>
+<li>Port D, pin 7 &#8594; LCD Chip Select pin.</li>
+</ul>
+	</div>
+		<h2><a name="serial_data_transmission">Transmitting Data From Teensy to LCD</a></h2>
+		<div class="section">
+		<p>Transmitting a byte to the LCD involves four pins:</p>
+		<p style="margin-left:0.5in;">
+    
+    <img src="[WK%208]%20%E2%80%93%20The%20LCD%20Screen_files/TransmitByte.png" alt="Transmitting a byte to LCD" width="929" height="279"><br><em>Refer: LCD data sheet, Fig 10, p12</em></p>
+		<ul></ul>
+		<p>Data transmission is done by the function <code>lcd_write</code> in <code>lcd.c</code>. This function sends a single byte to the LCD:
+
+			</p>
+<p style="margin-left: 0.5in;"></p><pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc2">/*
+ *  CAB202 Teensy Library (cab202_teensy)
+ *	lcd.c
+ *
+ *	Michael, 32/13/2015 12:34:56 AM
+ *
+ */</span>
+<span class="sc10">#include &lt;avr/io.h&gt;
+</span><span class="sc10">#include &lt;avr/pgmspace.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span>
+<span class="sc10">#include "lcd.h"
+</span><span class="sc10">#include "ascii_font.h"
+</span><span class="sc10">#include "macros.h"
+</span>
+<span class="sc2">/*
+ * Function implementations
+ */</span>
+<span class="sc10">void</span> <span class="sc11">lcd_init</span>(<span class="sc9">uint8_t</span> <span class="sc11">contrast</span>) {
+	<span class="sc2">// Set up the pins connected to the LCD as outputs</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRD</span>, <span class="sc11">SCEPIN</span>);
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">RSTPIN</span>);
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DCPIN</span>);
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DINPIN</span>);
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRF</span>, <span class="sc11">SCKPIN</span>);
+
+	<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>);
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTD</span>, <span class="sc11">SCEPIN</span>);
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>);
+
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x21</span>); <span class="sc2">// Enable LCD extended command set</span>
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x80</span> | <span class="sc11">contrast</span> ); <span class="sc2">// Set LCD Vop (Contrast)</span>
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x04</span>);
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x13</span>); <span class="sc2">// LCD bias mode 1:48</span>
+
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x0C</span>); <span class="sc2">// LCD in normal mode.</span>
+  	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x20</span>); <span class="sc2">// Enable LCD basic command set</span>
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x0C</span>);
+
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x40</span>); <span class="sc2">// Reset row to 0</span>
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, <span class="sc4">0x80</span>); <span class="sc2">// Reset column to 0</span>
+}
+
+<span class="sc10">void</span> <span class="sc11">lcd_write</span>(<span class="sc9">uint8_t</span> <span class="sc11">dc</span>, <span class="sc9">uint8_t</span> <span class="sc11">data</span>) {
+	<span class="sc2">// Set the DC pin based on the parameter 'dc' (Hint: use the WRITE_BIT macro)</span>
+	<span class="sc11">WRITE_BIT</span>(<span class="sc11">PORTB</span>,<span class="sc11">DCPIN</span>,<span class="sc11">dc</span>);
+
+	<span class="sc2">// Pull the SCE/SS pin low to signal the LCD we have data</span>
+	<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTD</span>,<span class="sc11">SCEPIN</span>);
+
+	<span class="sc2">// Write the byte of data using "bit bashing"</span>
+	<span class="sc5">for</span>(<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">7</span>; <span class="sc11">i</span> &gt;= <span class="sc4">0</span>; <span class="sc11">i</span>--) {
+		<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTF</span>, <span class="sc11">SCKPIN</span>) ;
+		<span class="sc5">if</span>((<span class="sc11">data</span>&gt;&gt;<span class="sc11">i</span>) &amp; (<span class="sc4">1</span> == <span class="sc4">1</span>)) {
+			<span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">DINPIN</span>);
+		} <span class="sc5">else</span> {
+			<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">DINPIN</span>);
+		}
+		<span class="sc11">SET_BIT</span>(<span class="sc11">PORTF</span>, <span class="sc11">SCKPIN</span>);
+	}
+
+	<span class="sc2">// Pull SCE/SS high to signal the LCD we are done</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTD</span>, <span class="sc11">SCEPIN</span>);
+}
+
+<span class="sc10">void</span> <span class="sc11">lcd_clear</span>(<span class="sc10">void</span>) {
+	<span class="sc2">// For each of the bytes on the screen, write an empty byte</span>
+	<span class="sc2">// We don't need to start from the start: bonus question - why not?</span>
+	<span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc10">LCD_X</span> * <span class="sc10">LCD_Y</span> / <span class="sc4">8</span>; <span class="sc11">i</span>++) {
+		<span class="sc11">lcd_write</span>(<span class="sc11">LCD_D</span>, <span class="sc4">0x00</span>);
+	}
+}
+
+<span class="sc10">void</span> <span class="sc11">lcd_position</span>(<span class="sc9">uint8_t</span> <span class="sc11">x</span>, <span class="sc9">uint8_t</span> <span class="sc11">y</span>) {
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, (<span class="sc4">0x40</span> | <span class="sc11">y</span> )); <span class="sc2">// Reset row to 0</span>
+	<span class="sc11">lcd_write</span>(<span class="sc11">LCD_C</span>, (<span class="sc4">0x80</span> | <span class="sc11">x</span> )); <span class="sc2">// Reset column to 0</span>
+}
+</pre>
+		<p></p>
+<p>We can see a direct correlation between the code and the diagram:</p>
+
+		<ul><li>Parameters are:
+			<ul><li><code>dc</code> – a byte, which should be either 0 or 1.</li>
+<li><code>data</code> – and arbitrary byte. It may contain either a command (when <code>dc&nbsp;==&nbsp;0</code>), or pixel data (when <code>dc&nbsp;==&nbsp;1</code>).</li>
+</ul></li>
+<li>Before we send any bits, the D/C pin is assigned the value.
+			<ul><li>LCD reads the D/C pin while the last (8<sup>th</sup>) bit is being read (Data sheet, p11).</li>
+<li>Setting it early does no harm… the value is ready in plenty of time.</li>
+</ul></li>
+<li>Next, 0 is written into the Chip Select pin, telling the LCD that data is on the way.</li>
+<li>The 8 bits are then sent, one at a time, starting with the most significant bit (bit 7). For each bit:
+			<ul><li>0 is written to the Serial Clock pin.</li>
+<li>The current bit is written to the Serial Data Input pin.</li>
+<li>1 is written to the Serial Clock pin. This tells the LCD to read the bit.</li>
+</ul></li>
+<li>After the bits are written, the Chip Select pin	is set back to 1 to tell the LCD there is no more data.</li>
+</ul>
+	</div>
+		<hr>
+
+	
+	
+
+    
+		<h2><a name="lcd_programming_model">Programming the LCD</a></h2>
+		<div class="section">
+		<p>The LCD instruction set is set out in Section 8 of the data sheet 
+(pages 14–16). We reproduce Tables 1 and 2 here for convenience. Unused 
+operations have been eliminated from Table 1.</p>
+
+<table style="margin-left:0.5in;" cellspacing="0" cellpadding="3" border="1">
+<tbody><tr><td rowspan="2">INSTRUCTION</td> <td rowspan="2">D/C</td>
+<td colspan="8">COMMAND BYTE</td>
+<td rowspan="2">DESCRIPTION</td></tr>
+<tr><td>DB7</td> <td>DB6</td> <td>DB5</td> <td>DB4</td> <td>DB3</td> <td>DB2</td> <td>DB1</td> <td>DB0</td></tr>
+<tr><td colspan="11">(H = 0 or 1) <em>Either instruction set</em></td></tr>
+<tr><td>NOP</td><td>0</td><td>0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> no operation</td></tr>
+<tr><td>Function set</td><td> 0</td><td> 0</td><td> 0</td><td> 1</td><td> 0</td><td> 0</td><td> PD</td><td> V</td><td> H</td><td> power down control; entry
+mode; extended instruction set
+control (H)</td></tr>
+<tr><td>Write data</td><td> 1</td><td> D7</td><td> D6</td><td> D5</td><td> D4</td><td> D3</td><td> D2</td><td> D1</td><td> D0</td><td> writes data to display RAM</td></tr>
+<tr><td colspan="11">(H = 0) <em>Basic instruction set</em></td></tr>
+
+<tr><td>Display control</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 1</td><td> D</td><td> 0</td><td> E</td><td> sets display configuration</td></tr>
+
+<tr><td>Set Y address of
+RAM</td><td>
+0</td><td> 0</td><td> 1</td><td> 0</td><td> 0</td><td> 0</td><td> Y2</td><td> Y1</td><td>
+Y0</td><td>
+sets Y-address of RAM;
+0 &#8804; Y &#8804; 5
+</td></tr>
+<tr><td>
+Set X address of
+RAM</td><td>
+0</td><td> 1</td><td> X6</td><td>
+X5</td><td>
+X4</td><td>
+X3</td><td>
+X2</td><td>
+X1</td><td>
+X0</td><td>
+sets X-address part of RAM;
+0 &#8804; X &#8804; 83</td></tr>
+<tr><td colspan="11">(H = 1) <em>Extended instruction set</em></td></tr>
+
+
+<tr><td>Temperature
+control</td><td>
+0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 1</td><td> TC1</td><td>
+TC0</td><td> set Temperature Coefficient
+(TCx)</td></tr>
+
+<tr><td>Bias system</td><td> 0</td><td> 0</td><td> 0</td><td> 0</td><td> 1</td><td> 0</td><td> BS2</td><td>
+BS1</td><td> BS0</td><td> set Bias System (BSx). <em>Determined by 
+number of multiplexed planes. This unit has MUX == 1:48, so the 
+appropriate value for Bias is 3. See page 16 of data sheet.</em></td></tr>
+
+<tr><td>Set VOP</td><td> 0</td><td> 1</td><td> VOP6</td><td> VOP5</td><td> VOP4</td><td> VOP3</td><td> VOP2</td><td> VOP1</td><td> VOP0</td><td> write VOP to register; sets the operating voltage; 0 &#8804; VOP &#8804; 127 == 0x7f. <em>Provides adjustable contrast</em>.</td></tr>
+</tbody></table>
+<p>Interpretation:</p>
+<table style="margin-left:0.5in;" cellspacing="0" cellpadding="3" border="1">
+<tbody><tr><td>BIT</td><td> 0</td><td> 1</td></tr>
+<tr><td>PD</td><td> chip is active</td><td> chip is in Power-down mode</td></tr>
+<tr><td>V</td><td> horizontal addressing</td><td> vertical addressing</td></tr>
+<tr><td>H</td><td> use basic instruction set</td><td> use extended instruction set</td></tr>
+<tr><td>D and E<br>00<br>10<br>01<br>11</td><td>
+<br>display blank<br>
+ normal mode<br>
+ all display segments on<br>
+ inverse video mode</td><td></td></tr>
+<tr><td>TC1 and TC0<br>00<br> 01<br> 10<br> 11</td><td> <br>VLCD temperature coefficient 0
+<br>VLCD temperature coefficient 1
+<br>VLCD temperature coefficient 2
+<br>VLCD temperature coefficient 3</td><td></td></tr></tbody></table>
+
+		<p>The information from this table has been distilled into <code>lcd_model.h</code>.
+ The enumerated types and macros will probably be helpful fro everybody;
+ the Nokia5110 structure is there for people who are interested in 
+creating software emulations of the LCD.
+			</p>
+<p style="margin-left:0.5in;"></p><pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc2">/*
+** Nokia 5110 LCD logical model.
+**
+**	Enumerated types and macros to support learning about the LCD.
+**
+**	Lawrence Buckingham, 10 Sep 2017.
+**	(C) Queensland University of Technology, Brisbane, Australia.
+*/</span>
+
+<span class="sc10">#pragma once
+</span><span class="sc10">#include &lt;stdint.h&gt;
+</span>
+<span class="sc10">#if ! defined(LCD_X)
+</span><span class="sc10">#define LCD_X 84
+</span><span class="sc10">#endif
+</span>
+<span class="sc10">#if ! defined(LCD_Y)
+</span><span class="sc10">#define LCD_Y 48
+</span><span class="sc10">#endif
+</span>
+<span class="sc2">// Issue a command to the Nokia5110.</span>
+<span class="sc10">#define LCD_CMD( op_code, args ) lcd_write(0,op_code|args)
+</span>
+<span class="sc2">// Send a byte of pixel data to the Nokia5110.</span>
+<span class="sc10">#define LCD_DATA( args )         lcd_write(1,args)
+</span>
+<span class="sc2">// Valid op_codes for Nokia5110.</span>
+<span class="sc5">typedef</span> <span class="sc5">enum</span> <span class="sc11">lcd_op_code_t</span> {
+	<span class="sc11">lcd_nop</span>              = <span class="sc4">0</span>,
+	<span class="sc11">lcd_set_function</span>     = <span class="sc4">1</span> &lt;&lt; <span class="sc4">5</span>,
+
+	<span class="sc2">// When lcd_instr_basic has been selected, these op_codes are available.</span>
+	<span class="sc11">lcd_set_display_mode</span> = <span class="sc4">1</span> &lt;&lt; <span class="sc4">3</span>,
+	<span class="sc11">lcd_set_y_addr</span>       = <span class="sc4">1</span> &lt;&lt; <span class="sc4">6</span>,
+	<span class="sc11">lcd_set_x_addr</span>       = <span class="sc4">1</span> &lt;&lt; <span class="sc4">7</span>,
+
+	<span class="sc2">// When lcd_instr_extended has been selected, these op_codes are available.</span>
+	<span class="sc11">lcd_set_temp_coeff</span>   = <span class="sc4">1</span> &lt;&lt; <span class="sc4">2</span>,
+	<span class="sc11">lcd_set_bias</span>         = <span class="sc4">1</span> &lt;&lt; <span class="sc4">4</span>,
+	<span class="sc11">lcd_set_contrast</span>     = <span class="sc4">1</span> &lt;&lt; <span class="sc4">7</span>,
+} <span class="sc11">lcd_op_code_t</span>;
+
+<span class="sc2">// Arguments for lcd_set_function</span>
+<span class="sc5">typedef</span> <span class="sc5">enum</span> <span class="sc11">lcd_power_mode_t</span> {
+	<span class="sc11">lcd_chip_active</span> = <span class="sc4">0</span>,
+	<span class="sc11">lcd_power_down</span>  = <span class="sc4">1</span> &lt;&lt; <span class="sc4">2</span>,
+} <span class="sc11">lcd_power_mode_t</span>;
+
+<span class="sc2">// Arguments for lcd_set_function</span>
+<span class="sc5">typedef</span> <span class="sc5">enum</span> <span class="sc11">lcd_addressing_mode_t</span> {
+	<span class="sc11">lcd_addr_horizontal</span> = <span class="sc4">0</span>,
+	<span class="sc11">lcd_addr_vertical</span>   = <span class="sc4">1</span> &lt;&lt; <span class="sc4">1</span>,
+} <span class="sc11">lcd_addressing_mode_t</span>;
+
+<span class="sc2">// Arguments for lcd_set_function</span>
+<span class="sc5">typedef</span> <span class="sc5">enum</span> <span class="sc11">lcd_instruction_mode_t</span> {
+	<span class="sc11">lcd_instr_basic</span>    = <span class="sc4">0</span>,
+	<span class="sc11">lcd_instr_extended</span> = <span class="sc4">1</span>
+} <span class="sc11">lcd_instruction_mode_t</span>;
+
+<span class="sc2">// Arguments for lcd_set_display_mode</span>
+<span class="sc5">typedef</span> <span class="sc5">enum</span> <span class="sc11">lcd_display_mode_t</span> {
+	<span class="sc11">lcd_display_all_off</span> = <span class="sc4">0b000</span>, <span class="sc2">// decimal 0</span>
+	<span class="sc11">lcd_display_all_on</span>  = <span class="sc4">0b001</span>, <span class="sc2">// decimal 1</span>
+	<span class="sc11">lcd_display_normal</span>  = <span class="sc4">0b100</span>, <span class="sc2">// decimal 4</span>
+	<span class="sc11">lcd_display_inverse</span> = <span class="sc4">0b101</span>, <span class="sc2">// decimal 5 </span>
+} <span class="sc11">lcd_display_mode_t</span>;
+
+<span class="sc2">// Arguments for lcd_set_y_addr: numeric values from 0 to 5.</span>
+<span class="sc2">// Arguments for lcd_set_x_addr: numeric values from 0 to 83.</span>
+<span class="sc2">// Arguments for lcd_set_temp_coeff: numeric values from 0 to 3.</span>
+<span class="sc2">// Arguments for lcd_set_bias: numeric values from 0 to 7. Ref Data Sheet.</span>
+<span class="sc2">// Arguments for lcd_set_contrast: numeric VOP values from 0 to 127.</span>
+
+<span class="sc2">/*
+**	A logical model of the LCD state machine.
+**
+**	!!! This is not for use in Teensy programs      !!!
+**	!!! But it can be used to implement an emulator !!!
+**
+*/</span>
+
+<span class="sc5">typedef</span> <span class="sc5">struct</span> <span class="sc11">Nokia5110_t</span> {
+	<span class="sc2">// PowerDown mode</span>
+	<span class="sc11">lcd_power_mode_t</span> <span class="sc11">powerMode</span>;
+
+	<span class="sc2">// Instruction set</span>
+	<span class="sc11">lcd_instruction_mode_t</span> <span class="sc11">instructionSet</span>;
+
+	<span class="sc2">// LCD contrast (V_{OP} setting. Valid values 0 .. 0x7f</span>
+	<span class="sc9">uint8_t</span> <span class="sc11">contrast</span>;
+
+	<span class="sc2">// LCD Bias. Valid values 0 .. 7</span>
+	<span class="sc9">uint8_t</span> <span class="sc11">bias</span>;
+
+	<span class="sc2">// LCD Temperature Coefficient. Valid values 0.. 0x03. </span>
+	<span class="sc9">uint8_t</span> <span class="sc11">temperatureCoefficient</span>;
+
+	<span class="sc2">// Display mode.</span>
+	<span class="sc11">lcd_display_mode_t</span> <span class="sc11">displayMode</span>;
+
+	<span class="sc2">// Addressing mode (cursor direction control)</span>
+	<span class="sc11">lcd_addressing_mode_t</span> <span class="sc11">addressing</span>;
+
+	<span class="sc2">// Current horizontal position of data cursor (0..83).</span>
+	<span class="sc2">// When a data byte is received, the byte is inserted at pixels[x][y],</span>
+	<span class="sc2">// after which x and/or y are updated according to the addressing mode.</span>
+	<span class="sc9">uint8_t</span> <span class="sc11">x</span>;
+
+	<span class="sc2">// Current vertical position of data cursor (0..5)</span>
+	<span class="sc2">// When a data byte is received, the byte is inserted at pixels[x][y],</span>
+	<span class="sc2">// after which x and/or y are updated according to the addressing mode.</span>
+	<span class="sc9">uint8_t</span> <span class="sc11">y</span>;
+
+	<span class="sc2">// Pixel data 2D array</span>
+	<span class="sc9">uint8_t</span> <span class="sc11">pixels</span>[<span class="sc10">LCD_X</span>][<span class="sc10">LCD_Y</span> / <span class="sc4">8</span>];
+
+} <span class="sc11">Nokia5110_t</span>;
+
+</pre>
+		<p></p>
+<p>Every LCD command (other than writing pixel data) is an 8-bit value with two parts:</p>
+
+
+		<ul><li><code>COMMAND&nbsp;=&nbsp;OP_CODE&nbsp;|&nbsp;ARGS</code> or perhaps <code>COMMAND&nbsp;=&nbsp;OP_CODE&nbsp;|&nbsp;ARG1&nbsp;|&nbsp;ARG2&nbsp;|&nbsp;…</code></li>
+<li><code>OP_CODE&nbsp;==&nbsp;<em>operation&nbsp;code</em></code>.</li>
+<li>PCD8544 recognises 8 operation codes – defined in <code>lcd_op_code_t</code>.</li>
+<li>The operation codes are classified as <em>general</em>, <em>basic</em>, or <em>extended</em>.
+			<ul><li>General commands can be sent at any time. They are <code>lcd_nop</code> and <code>lcd_set_function</code>.</li>
+<li>Basic commands are <code>lcd_set_display_mode</code>, <code>lcd_set_y_addr</code>, and <code>lcd_set_x_addr</code>. These are called frequently.</li>
+<li>Extended commands are <code>lcd_set_temp_coeff</code>, <code>lcd_set_bias</code>, and <code>lcd_set_contrast</code>. These are called less frequently.</li>
+</ul></li>
+<li>Each operation code has a particular set of values that are meaningful. They are modelled where possible by an enumerated type.
+			<ul><li><code>lcd_nop</code> &#8594; nothing.</li>
+<li><code>lcd_set_function</code> &#8594; up to three arguments: <code>lcd_power_mode_t</code>, <code>lcd_addressing_mode_t</code>, and <code>lcd_instruction_mode_t</code>.</li>
+<li><code>lcd_set_display_mode</code> &#8594; <code>lcd_display_mode_t</code></li>
+<li><code>lcd_set_y_addr</code> &#8594; <code>0..5</code></li>
+<li><code>lcd_set_x_addr</code> &#8594; <code>0..83</code></li>
+<li><code>lcd_set_temp_coeff</code> &#8594; <code>0..3</code></li>
+<li><code>lcd_set_bias</code>  &#8594; <code>0..7</code></li>
+<li><code>lcd_set_contrast</code> &#8594; <code>0..127</code></li>
+</ul></li>
+</ul>
+
+	</div>
+		<hr>
+
+	
+	
+
+    
+		<h2><a name="pixels">Pixel data storage</a></h2>
+		<div class="section">
+		<p>The LCD contains 504 bytes of display data RAM which is organised as 6 <em>banks</em>, each of which has 84 bytes of storage.</p>
+
+		<ul><li>Each bank contains a horizontal band of pixels which stretches from the left to right side of the display.</li>
+<li>The pixels are arranged in vertical blocks of 8, and each block of 8 pixels is packed into a byte.</li>
+<li>Every time we write data to the LCD display we replace a complete block of 8 pixels.</li>
+</ul>
+		<p></p>
+<p style="margin-left:0.5in;"><img src="[WK%208]%20%E2%80%93%20The%20LCD%20Screen_files/Pixels.png" alt="DDRAM layout" width="570" height="765"></p>
+
+		<ul><li>Although reality may be different, it is useful to think of the LCD pixel data storage as a system with three variables:<br>
+			<code>uint8_t&nbsp;x;&nbsp;//&nbsp;Horizontal&nbsp;cursor&nbsp;position,&nbsp;ranging&nbsp;from&nbsp;0&nbsp;to&nbsp;83</code><br> 
+			<code>uint8_t&nbsp;y;&nbsp;//&nbsp;Vertical&nbsp;cursor&nbsp;position,&nbsp;ranging&nbsp;from&nbsp;0&nbsp;to&nbsp;5</code><br> 
+			<code>uint8_t&nbsp;pixels[6][84];&nbsp;//&nbsp;Pixel&nbsp;data,&nbsp;indexed&nbsp;by&nbsp;(y,x)</code></li>
+<li>Here <code>x</code> and <code>y</code> specify where the next byte of pixel data will be placed when it arrives.
+			<ul><li><code>(y,x)&nbsp;==&nbsp;(0,0)</code> is the top left corner of the display.</li>
+<li>The values of <code>x</code> and <code>y</code> can be set via <code>lcd_set_y_addr</code> and <code>lcd_set_x_addr</code> commands.</li>
+<li>After each byte of pixel data arrives, <code>x</code>, <code>y</code>, or possibly both, change.</li>
+<li>If horizontal addressing is active, then <code>x</code> increments after each byte is drawn. When <code>x</code> reaches 84, it wraps back to 0, and <code>y</code> increments. When <code>y</code> reaches 6, it wraps back to 0.</li>
+<li>If vertical addressing is active, then <code>y</code> increments after each byte is drawn. When <code>y</code> reaches 6, it wraps back to 0, and <code>x</code> increments. When <code>x</code> reaches 84, it wraps back to 0.</li>
+<li>If 504 bytes are written, the cursor will return to its original 
+location (because it will have travelled over every block in every bank 
+in the display).</li>
+</ul></li>
+<li>8 pixels are packed into each byte of display memory.
+			<ul><li>Pixel data is sent in batches of 8 bits, so 8 pixels are overwritten each time pixel data is sent.</li>
+<li>The pixels in a block are laid out vertically on the physical 
+display, with the pixel corresponding to the least significant bit (the 
+“ones”) appearing at the top of the bank. So a block containing bits:
+				<table style="margin-top: 6pt;" class="indent" cellspacing="0" cellpadding="3" border="1"><tbody><tr><td><code>b<sub>7</sub>&nbsp;</code></td><td><code>b<sub>6</sub>&nbsp;</code></td><td><code>b<sub>5</sub>&nbsp;</code></td><td><code>b<sub>4</sub>&nbsp;</code></td><td><code>b<sub>3</sub>&nbsp;</code></td><td><code>b<sub>2</sub>&nbsp;</code></td><td><code>b<sub>1</sub>&nbsp;</code></td><td><code>b<sub>0</sub>&nbsp;</code></td></tr></tbody></table>
+				<p>will be drawn to the LCD as below:</p>
+				<table class="indent" cellspacing="0" cellpadding="3" border="1">
+					
+					<tbody><tr><td><code>b<sub>0</sub></code></td></tr>
+					<tr><td><code>b<sub>1</sub></code></td></tr>
+					<tr><td><code>b<sub>2</sub></code></td></tr>
+					<tr><td><code>b<sub>3</sub></code></td></tr>
+					<tr><td><code>b<sub>4</sub></code></td></tr>
+					<tr><td><code>b<sub>5</sub></code></td></tr>
+					<tr><td><code>b<sub>6</sub></code></td></tr>
+					<tr><td><code>b<sub>7</sub></code></td></tr>
+				</tbody></table>
+				<p>(Remember, (<code>b<sub>i</sub>&nbsp;&#8712;&nbsp;{0,&nbsp;1}</code>).)</p></li>
+<li>There is no mechanism to combine new pixels with old.
+				<ul><li>If you want to blend new content in with old, all processing must be done before the pixels are sent to the LCD display.</li>
+<li>Depending on the kind of drawing tasks that must be done, it may be 
+necessary to keep a screen buffer in microcontroller RAM, and 
+periodically flush it to the LCD.</li>
+<li>This is what we do with <code>cab202_teensy/graphics.c</code>.</li>
+</ul></li>
+<li>To write an 8-bit block of pixel data <code>(pixel_block)</code> at screen coordinates <code>(px,py)</code>:
+				<ul><li>Get the cursor position:<br>
+					<pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc11">x</span> = <span class="sc11">px</span>; 
+<span class="sc11">y</span> = <span class="sc11">py</span> / <span class="sc4">8</span>;</pre>
+		</li>
+<li>Move LCD internal cursor:<br>
+					<pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span> | <span class="sc11">lcd_addr_horizontal</span>);
+<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, <span class="sc11">x</span>);
+<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, <span class="sc11">y</span>);</pre>
+		</li>
+<li>Write the byte value:<br>
+<pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc11">LCD_DATA</span>(<span class="sc11">pixel_block</span>);</pre>
+		</li>
+</ul></li>
+</ul></li>
+</ul>
+	</div>
+		<h2><a name="ex1">Case study 1: <tt>lcd_init</tt></a></h2>
+		<div class="section">
+		<p>The <code>lcd_init</code> function in the library was written with no regard for readability. In the following code listing (<code>TeensyLines.c</code>) it is rewritten using more comprehensible notation.
+			</p>
+<p style="margin-left:0.5in;">
+</p><pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;avr/io.h&gt; 
+</span><span class="sc10">#include &lt;avr/interrupt.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span><span class="sc10">#include &lt;cpu_speed.h&gt;
+</span>
+<span class="sc10">#include &lt;graphics.h&gt;
+</span><span class="sc10">#include &lt;macros.h&gt;
+</span>
+<span class="sc10">#include "lcd_model.h"
+</span>
+<span class="sc10">void</span> <span class="sc11">new_lcd_init</span>(<span class="sc9">uint8_t</span> <span class="sc11">contrast</span>) {
+	<span class="sc2">// Set up the pins connected to the LCD as outputs</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRD</span>, <span class="sc11">SCEPIN</span>); <span class="sc2">// Chip select -- when low, tells LCD we're sending data</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">RSTPIN</span>); <span class="sc2">// Chip Reset</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DCPIN</span>);  <span class="sc2">// Data / Command selector</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DINPIN</span>); <span class="sc2">// Data input to LCD</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRF</span>, <span class="sc11">SCKPIN</span>); <span class="sc2">// Clock input to LCD</span>
+
+	<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>); <span class="sc2">// Reset LCD</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTD</span>, <span class="sc11">SCEPIN</span>);   <span class="sc2">// Tell LCD we're not sending data.</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>);   <span class="sc2">// Stop resetting LCD</span>
+
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_extended</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_contrast</span>, <span class="sc11">contrast</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_temp_coeff</span>, <span class="sc4">0</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_bias</span>, <span class="sc4">3</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_display_mode</span>, <span class="sc11">lcd_display_normal</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, <span class="sc4">0</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, <span class="sc4">0</span>);
+}
+
+<span class="sc10">void</span> <span class="sc11">setup</span>(<span class="sc10">void</span>) {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+	<span class="sc11">new_lcd_init</span>(<span class="sc10">LCD_DEFAULT_CONTRAST</span>);
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>(<span class="sc10">void</span>) {
+	<span class="sc5">static</span> <span class="sc9">double</span> <span class="sc11">fraction</span> = <span class="sc4">0</span><span class="sc4">.0</span>;
+	<span class="sc11">clear_screen</span>();
+
+
+
+	 <span class="sc5">for</span> ( <span class="sc9">int</span> <span class="sc11">y</span> = <span class="sc4">0</span>; <span class="sc11">y</span> &lt; <span class="sc10">LCD_Y</span>; <span class="sc11">y</span>++ ) {
+		<span class="sc11">draw_line</span>(<span class="sc4">0</span>, <span class="sc11">y</span>, <span class="sc10">LCD_X</span> - <span class="sc4">1</span>, <span class="sc11">y</span>, <span class="sc11">FG_COLOUR</span>);
+	}
+    
+
+	<span class="sc9">int</span> <span class="sc11">x1</span> = <span class="sc10">LCD_X</span> * <span class="sc11">fraction</span>;
+	<span class="sc9">int</span> <span class="sc11">x2</span> = <span class="sc10">LCD_X</span> - <span class="sc11">x1</span>;
+	<span class="sc9">int</span> <span class="sc11">y1</span> = <span class="sc10">LCD_Y</span> * <span class="sc11">fraction</span>;
+	<span class="sc9">int</span> <span class="sc11">y2</span> = <span class="sc10">LCD_Y</span> - <span class="sc11">y1</span>;
+
+	<span class="sc11">fraction</span> += <span class="sc4">0</span><span class="sc4">.01</span>;
+
+	<span class="sc5">if</span> ( <span class="sc11">fraction</span> &gt;= <span class="sc4">0</span><span class="sc4">.5</span> ) <span class="sc11">fraction</span> = <span class="sc4">0</span><span class="sc4">.0</span>;
+
+	<span class="sc11">draw_line</span>(<span class="sc11">x1</span>, <span class="sc11">y1</span>, <span class="sc11">x2</span>, <span class="sc11">y1</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_line</span>(<span class="sc11">x1</span>, <span class="sc11">y2</span>, <span class="sc11">x2</span>, <span class="sc11">y2</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_line</span>(<span class="sc11">x1</span>, <span class="sc11">y1</span>, <span class="sc11">x1</span>, <span class="sc11">y2</span>, <span class="sc11">BG_COLOUR</span>);
+	<span class="sc11">draw_line</span>(<span class="sc11">x2</span>, <span class="sc11">y1</span>, <span class="sc11">x2</span>, <span class="sc11">y2</span>, <span class="sc11">BG_COLOUR</span>);
+
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+		<span class="sc2">// _delay_ms(10);</span>
+	}
+}
+</pre>
+		<p></p>
+
+	</div>
+		<hr>
+
+	
+	
+
+    
+		<h2><a name="ex2">Worked example 2: Changing Contrast</a></h2>
+		<div class="section">
+		<p>Due to physical variations in the LCD it is a good idea to make it 
+possible for the user to select a contrast level that suits the ambient 
+lighting and temperature. In <code>ContrastDemo</code> we see how to adjust the contrast of the display. 
+			</p>
+<p style="margin-left:0.5in;"></p><pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;avr/io.h&gt; 
+</span><span class="sc10">#include &lt;avr/interrupt.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span><span class="sc10">#include &lt;cpu_speed.h&gt;
+</span><span class="sc10">#include &lt;stdio.h&gt;
+</span>
+<span class="sc10">#include &lt;graphics.h&gt;
+</span><span class="sc10">#include &lt;macros.h&gt;
+</span>
+<span class="sc10">#include "lcd_model.h"
+</span>
+<span class="sc10">void</span> <span class="sc11">new_lcd_init</span>(<span class="sc9">uint8_t</span> <span class="sc11">contrast</span>) {
+	<span class="sc2">// Set up the pins connected to the LCD as outputs</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRD</span>, <span class="sc11">SCEPIN</span>); <span class="sc2">// Chip select -- when low, tells LCD we're sending data</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">RSTPIN</span>); <span class="sc2">// Chip Reset</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DCPIN</span>);  <span class="sc2">// Data / Command selector</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DINPIN</span>); <span class="sc2">// Data input to LCD</span>
+	<span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRF</span>, <span class="sc11">SCKPIN</span>); <span class="sc2">// Clock input to LCD</span>
+	
+
+	<span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>); <span class="sc2">// Reset LCD</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTD</span>, <span class="sc11">SCEPIN</span>);   <span class="sc2">// Tell LCD we're not sending data.</span>
+	<span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>);   <span class="sc2">// Stop resetting LCD</span>
+
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_extended</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_contrast</span>, <span class="sc11">contrast</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_temp_coeff</span>, <span class="sc4">0</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_bias</span>, <span class="sc4">3</span>);
+
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_display_mode</span>, <span class="sc11">lcd_display_normal</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, <span class="sc4">0</span>);
+	<span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, <span class="sc4">0</span>);
+}
+
+<span class="sc10">void</span> <span class="sc11">setup</span>(<span class="sc10">void</span>) {
+	<span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+	<span class="sc11">new_lcd_init</span>(<span class="sc10">LCD_DEFAULT_CONTRAST</span>);
+	<span class="sc11">clear_screen</span>();
+	<span class="sc11">draw_string</span>( <span class="sc4">10</span>, <span class="sc4">10</span>, <span class="sc6">"Hello Cab202!"</span>, <span class="sc11">FG_COLOUR</span> );
+	<span class="sc11">show_screen</span>();
+}
+
+<span class="sc9">char</span> <span class="sc11">buffer</span>[<span class="sc4">10</span>];
+
+<span class="sc10">void</span> <span class="sc11">draw_int</span>(<span class="sc9">uint8_t</span> <span class="sc11">x</span>, <span class="sc9">uint8_t</span> <span class="sc11">y</span>, <span class="sc9">int</span> <span class="sc11">t</span>) {
+	<span class="sc11">snprintf</span>( <span class="sc11">buffer</span>, <span class="sc4">10</span>, <span class="sc6">"%d"</span>, <span class="sc11">t</span> );
+	<span class="sc11">draw_string</span>( <span class="sc11">x</span>, <span class="sc11">y</span>, <span class="sc11">buffer</span>, <span class="sc11">FG_COLOUR</span> );
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>(<span class="sc10">void</span>) {
+	<span class="sc5">static</span> <span class="sc9">uint8_t</span> <span class="sc11">contrast</span> = <span class="sc4">0</span>;
+	<span class="sc11">contrast</span> ++;
+	<span class="sc5">if</span> ( <span class="sc11">contrast</span> &gt; <span class="sc4">127</span> ) <span class="sc11">contrast</span> = <span class="sc4">0</span>;
+	
+	<span class="sc11">draw_string</span>( <span class="sc4">10</span>, <span class="sc4">20</span>, <span class="sc6">"         "</span>, <span class="sc11">FG_COLOUR</span> );
+	<span class="sc11">draw_int</span>( <span class="sc4">10</span>, <span class="sc4">20</span>, <span class="sc11">contrast</span> );
+	<span class="sc11">show_screen</span>();
+	
+	<span class="sc11">LCD_CMD</span>( <span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_extended</span> );
+	<span class="sc11">LCD_CMD</span>( <span class="sc11">lcd_set_contrast</span>, <span class="sc11">contrast</span> );
+	<span class="sc11">LCD_CMD</span>( <span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span> );
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+	<span class="sc11">setup</span>();
+
+	<span class="sc5">for</span> ( ;; ) {
+		<span class="sc11">process</span>();
+		_<span class="sc11">delay_ms</span>(<span class="sc4">50</span>);
+	}
+}
+</pre>
+		<p></p>
+
+	</div>
+		<hr>
+
+	
+	
+
+    
+		<h2><a name="ex3">Worked example 3: Direct screen write to the LCD</a></h2>
+		<div class="section">
+		<p>There may be situations where it makes sense to draw objects directly to the screen.</p>
+<p>For example, some applications require text output only. Since 
+sophisticated graphical effects are not required, we can use the memory 
+occupied by the screen buffer for other purposes.</p>
+<p>Another case would be where (for performance reasons) we wish to 
+selectively update a small part of the screen but leave the remainder 
+unchanged. This might be applicable for example if a sprite is moving 
+over a static background.</p>
+<p><code>DirectDemo.c</code> shows how to write bit patterns directly to the LCD. 
+			  
+			</p>
+<p style="margin-left:0.5in;"></p><pre style="line-height: 1.2; background: #2A211C; color: #BDAE9D; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;avr/io.h&gt; 
+</span><span class="sc10">#include &lt;avr/interrupt.h&gt;
+</span><span class="sc10">#include &lt;util/delay.h&gt;
+</span><span class="sc10">#include &lt;cpu_speed.h&gt;
+</span><span class="sc10">#include &lt;stdio.h&gt;
+</span><span class="sc10">#include &lt;stdlib.h&gt;
+</span>
+<span class="sc10">#include &lt;macros.h&gt;
+</span><span class="sc10">#include &lt;lcd_model.h&gt;
+</span><span class="sc10">#include &lt;ascii_font.h&gt;
+</span><span class="sc10">#include &lt;graphics.h&gt;
+</span>
+<span class="sc2">/*
+**  Initialise the LCD display.
+*/</span>
+<span class="sc10">void</span> <span class="sc11">new_lcd_init</span>(<span class="sc9">uint8_t</span> <span class="sc11">contrast</span>) {
+    <span class="sc2">// Set up the pins connected to the LCD as outputs</span>
+    <span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRD</span>, <span class="sc11">SCEPIN</span>); <span class="sc2">// Chip select -- when low, tells LCD we're sending data</span>
+    <span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">RSTPIN</span>); <span class="sc2">// Chip Reset</span>
+    <span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DCPIN</span>);  <span class="sc2">// Data / Command selector</span>
+    <span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRB</span>, <span class="sc11">DINPIN</span>); <span class="sc2">// Data input to LCD</span>
+    <span class="sc11">SET_OUTPUT</span>(<span class="sc11">DDRF</span>, <span class="sc11">SCKPIN</span>); <span class="sc2">// Clock input to LCD</span>
+
+    <span class="sc11">CLEAR_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>); <span class="sc2">// Reset LCD</span>
+    <span class="sc11">SET_BIT</span>(<span class="sc11">PORTD</span>, <span class="sc11">SCEPIN</span>);   <span class="sc2">// Tell LCD we're not sending data.</span>
+    <span class="sc11">SET_BIT</span>(<span class="sc11">PORTB</span>, <span class="sc11">RSTPIN</span>);   <span class="sc2">// Stop resetting LCD</span>
+
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_extended</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_contrast</span>, <span class="sc11">contrast</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_temp_coeff</span>, <span class="sc4">0</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_bias</span>, <span class="sc4">3</span>);
+
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_display_mode</span>, <span class="sc11">lcd_display_normal</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, <span class="sc4">0</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, <span class="sc4">0</span>);
+}
+
+<span class="sc9">uint8_t</span> <span class="sc11">smiley_original</span>[<span class="sc4">8</span>] = {
+    <span class="sc4">0b00111100</span>,
+    <span class="sc4">0b01000010</span>,
+    <span class="sc4">0b10100101</span>,
+    <span class="sc4">0b10000001</span>,
+    <span class="sc4">0b10100101</span>,
+    <span class="sc4">0b10011001</span>,
+    <span class="sc4">0b01000010</span>,
+    <span class="sc4">0b00111100</span>,
+};
+
+<span class="sc9">uint8_t</span> <span class="sc11">smiley_direct</span>[<span class="sc4">8</span>];
+<span class="sc9">uint8_t</span> <span class="sc11">x</span>, <span class="sc11">y</span>;
+
+<span class="sc2">/*
+**  Convert smiley into vertical slices for direct drawing.
+**  This will need to be amended if smiley is larger than 8x8.
+*/</span>
+<span class="sc10">void</span> <span class="sc11">setup_smiley</span>(<span class="sc10">void</span>) {
+    <span class="sc2">// Visit each column of output bitmap</span>
+    <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc4">8</span>; <span class="sc11">i</span>++) {
+
+        <span class="sc2">// Visit each row of output bitmap</span>
+        <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">j</span> = <span class="sc4">0</span>; <span class="sc11">j</span> &lt; <span class="sc4">8</span>; <span class="sc11">j</span>++) {
+            <span class="sc2">// Kind of like: smiley_direct[i][j] = smiley_original[j][7-i].</span>
+            <span class="sc2">// Flip about the major diagonal.</span>
+            <span class="sc9">uint8_t</span> <span class="sc11">bit_val</span> = <span class="sc11">BIT_VALUE</span>(<span class="sc11">smiley_original</span>[<span class="sc11">j</span>], (<span class="sc4">7</span> - <span class="sc11">i</span>));
+            <span class="sc11">WRITE_BIT</span>(<span class="sc11">smiley_direct</span>[<span class="sc11">i</span>], <span class="sc11">j</span>, <span class="sc11">bit_val</span>);
+        }
+    }
+
+    <span class="sc2">// Choose any random (x,y)</span>
+    <span class="sc11">x</span> = <span class="sc11">rand</span>() % (<span class="sc10">LCD_X</span> - <span class="sc4">8</span>);
+    <span class="sc11">y</span> = <span class="sc11">rand</span>() % (<span class="sc10">LCD_Y</span> - <span class="sc4">8</span>);
+}
+
+<span class="sc2">/*
+**  Draw smiley face directly to LCD.
+**  (Notice: we cheat on the y-coordinate.)
+*/</span>
+<span class="sc10">void</span> <span class="sc11">draw_smiley</span>(<span class="sc10">void</span>) {
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span> | <span class="sc11">lcd_addr_horizontal</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, <span class="sc11">x</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, <span class="sc11">y</span> / <span class="sc4">8</span>);
+
+    <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc4">8</span>; <span class="sc11">i</span>++) {
+        <span class="sc11">LCD_DATA</span>(<span class="sc11">smiley_direct</span>[<span class="sc11">i</span>]);
+    }
+}
+
+<span class="sc2">/*
+**  Draw character directly to LCD.
+**  Bypasses the screen buffer used by &lt;lcd.h&gt;.
+**
+**	Parameters:
+**      x, y:   Integer coordinates at which the character will be placed.
+**              The y-position will be truncated to the nearest multiple of 8.
+**      ch:     The character to draw.
+**      colour: The colour. If FG_COLOUR, the characters are rendered normally.
+**              If BG_COLOUR, the text is drawn as a negative (inverse).
+**  Returns:
+**      No result is returned.
+*/</span>
+<span class="sc10">void</span> <span class="sc11">draw_char_direct</span>(<span class="sc9">int</span> <span class="sc11">x</span>, <span class="sc9">int</span> <span class="sc11">y</span>, <span class="sc9">char</span> <span class="sc11">ch</span>, <span class="sc9">colour_t</span> <span class="sc11">colour</span>) {
+    <span class="sc2">// Do nothing if character does not fit on LCD.</span>
+    <span class="sc5">if</span> (<span class="sc11">x</span> &lt; <span class="sc4">0</span> || <span class="sc11">x</span> &gt; <span class="sc10">LCD_X</span> - <span class="sc11">CHAR_WIDTH</span> || <span class="sc11">y</span> &lt; <span class="sc4">0</span> || <span class="sc11">y</span> &gt; <span class="sc10">LCD_Y</span> - <span class="sc11">CHAR_HEIGHT</span>) {
+        <span class="sc5">return</span>;
+    }
+
+    <span class="sc2">// Move LCD cursor to starting spot.</span>
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span> | <span class="sc11">lcd_addr_horizontal</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, (<span class="sc11">x</span> &amp; <span class="sc4">0x7f</span>));
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, (<span class="sc11">y</span> &amp; <span class="sc4">0x7f</span>) / <span class="sc4">8</span>);
+
+    <span class="sc2">// Send pixel blocks.</span>
+    <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc11">CHAR_WIDTH</span>; <span class="sc11">i</span>++) {
+        <span class="sc9">uint8_t</span> <span class="sc11">pixelBlock</span> = <span class="sc11">pgm_read_byte</span>(&amp;(<span class="sc11">ASCII</span>[<span class="sc11">ch</span> - <span class="sc4">' '</span>][<span class="sc11">i</span>]));
+
+        <span class="sc5">if</span> (<span class="sc11">colour</span> == <span class="sc11">BG_COLOUR</span>) {
+            <span class="sc11">pixelBlock</span> = ~<span class="sc11">pixelBlock</span>;
+        }
+
+        <span class="sc11">LCD_DATA</span>(<span class="sc11">pixelBlock</span>);
+    }
+}
+
+<span class="sc2">/*
+**	Draw string directly to LCD.
+**  Bypasses the screen buffer used by &lt;lcd.h&gt;.
+**
+**	Parameters:
+**      x, y:   Integer coordinates at which the character will be placed.
+**              The y-position will be truncated to the nearest multiple of 8.
+**      str:    The text to draw.
+**      colour: The colour. If FG_COLOUR, the characters are rendered normally.
+**              If BG_COLOUR, the text is drawn as a negative (inverse).
+**  Returns:
+**      No result is returned.
+*/</span>
+<span class="sc10">void</span> <span class="sc11">draw_string_direct</span>(<span class="sc9">int</span> <span class="sc11">x</span>, <span class="sc9">int</span> <span class="sc11">y</span>, <span class="sc9">char</span> * <span class="sc11">str</span>, <span class="sc9">colour_t</span> <span class="sc11">colour</span>) {
+    <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">str</span>[<span class="sc11">i</span>] != <span class="sc4">0</span>; <span class="sc11">i</span>++, <span class="sc11">x</span> += <span class="sc11">CHAR_WIDTH</span>) {
+        <span class="sc11">draw_char_direct</span>(<span class="sc11">x</span>, <span class="sc11">y</span>, <span class="sc11">str</span>[<span class="sc11">i</span>], <span class="sc11">colour</span>);
+    }
+}
+
+<span class="sc2">/*
+**	Remove smiley from LCD.
+*/</span>
+<span class="sc10">void</span> <span class="sc11">erase_smiley</span>(<span class="sc10">void</span>) {
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_function</span>, <span class="sc11">lcd_instr_basic</span> | <span class="sc11">lcd_addr_horizontal</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_x_addr</span>, <span class="sc11">x</span>);
+    <span class="sc11">LCD_CMD</span>(<span class="sc11">lcd_set_y_addr</span>, <span class="sc11">y</span> / <span class="sc4">8</span>);
+
+    <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc4">0</span>; <span class="sc11">i</span> &lt; <span class="sc4">8</span>; <span class="sc11">i</span>++) {
+        <span class="sc11">LCD_DATA</span>(<span class="sc4">0</span>);
+    }
+}
+
+<span class="sc10">void</span> <span class="sc11">setup</span>(<span class="sc10">void</span>) {
+    <span class="sc11">set_clock_speed</span>(<span class="sc10">CPU_8MHz</span>);
+    <span class="sc11">new_lcd_init</span>(<span class="sc10">LCD_DEFAULT_CONTRAST</span>);
+    <span class="sc11">lcd_clear</span>();
+    <span class="sc11">draw_string_direct</span>((<span class="sc10">LCD_X</span> - <span class="sc4">6</span> * <span class="sc11">CHAR_WIDTH</span>) / <span class="sc4">2</span>, <span class="sc4">4</span> * <span class="sc11">CHAR_HEIGHT</span>, <span class="sc6">"Direct"</span>, <span class="sc11">FG_COLOUR</span>);
+    <span class="sc11">draw_string_direct</span>((<span class="sc10">LCD_X</span> - <span class="sc4">6</span> * <span class="sc11">CHAR_WIDTH</span>) / <span class="sc4">2</span>, <span class="sc4">5</span> * <span class="sc11">CHAR_HEIGHT</span>, <span class="sc6">"Writer"</span>, <span class="sc11">FG_COLOUR</span>);
+    <span class="sc11">setup_smiley</span>();
+    <span class="sc11">draw_smiley</span>();
+}
+
+<span class="sc10">void</span> <span class="sc11">process</span>(<span class="sc10">void</span>) {
+    <span class="sc11">erase_smiley</span>();
+    <span class="sc11">x</span> = (<span class="sc11">x</span> + <span class="sc4">1</span>) % (<span class="sc10">LCD_X</span> - <span class="sc4">8</span>);
+    <span class="sc11">draw_smiley</span>();
+}
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>) {
+    <span class="sc11">setup</span>();
+
+    <span class="sc5">for</span> (;; ) {
+        <span class="sc11">process</span>();
+        _<span class="sc11">delay_ms</span>(<span class="sc4">100</span>);
+    }
+}
+</pre>
+		<p></p>
+<p>The program also shows some of the extra actions that need to be taken when rendering straight onto the screen.</p>
+
+		<ul><li>The left-to-right, top-down declaration of a bitmap that works
+ well in a text editor is not suitable for the LCD due to the pixel 
+layout.</li>
+<li>We create a second image of smiley which conforms to the LCD topology by transposing smiley.
+			<ul><li>The rows of original smiley become columns in transposed smiley, and vice-versa.</li>
+</ul></li>
+<li>Because pixels are transferred in batches of 8, it is somewhat more 
+difficult to draw smiley at pixel y-coordinates that aren’t divisible by
+ 8.
+			<ul><li>Today, we cheat by just truncating the vertical position to the nearest multiple of 8 vertical pixels.</li>
+</ul></li>
+<li><em>Something to look forward to</em>: In AMS exercises you will be 
+guided through the process of creating larger bitmaps, and drawing 
+objects at arbitrary screen positions.</li>
+</ul>
+	</div>
+		<hr>
+
+	<p style="text-align:center"><em>The End</em></p>
+	<hr>
+
+
+</body></html>

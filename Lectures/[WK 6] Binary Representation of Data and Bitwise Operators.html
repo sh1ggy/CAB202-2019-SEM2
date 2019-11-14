@@ -1,0 +1,1129 @@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>CAB202 Topic 6 &ndash; Binary representation of data and bitwise operators.</title>
+
+	<style type="text/css">
+		body {
+			font-size: medium;
+			max-width: 55em;
+			margin: auto;
+			text-align: justify;
+			background-color: #F1F1F1;
+		}
+
+		.indent {
+			margin-left: 0.6cm;
+		}
+
+		.codeblock {
+			font-size: +1;
+			font-family: monospace;
+			font-weight: bold;
+			background-color: #303030;
+			color: #dcdcdc;
+			/* font-size: large; */
+		}
+
+		pre {
+			border: 1px solid gray;
+			padding: 6pt;
+			width: 100%;
+		}
+
+		textarea {
+			margin-top: 6pt;
+		}
+
+		td {
+			/* width: 4in; */
+			vertical-align: top;
+		}
+
+		code {
+			font-size: medium;
+			font-weight: bold;
+		}
+
+		li {
+			margin-bottom: 6pt;
+		}
+
+		table {
+			margin-top: 6pt;
+		}
+
+		li ul {
+			margin-top: 6pt;
+		}
+
+		.section {
+			margin-left: 0.6cm;
+		}
+
+		.subsection {
+			margin-left: 0.6cm;
+		}
+
+		span.li  {display: list-item; margin-left: 0.6cm}
+
+		span.li2  {display: list-item; margin-left: 1.2cm}
+
+		td.truth_table { text-align: center; width: 1cm; vertical-align: middle; }
+
+		div.truth_table_container { display: inline-block; width: 5.5cm; vertical-align: top; text-align: center; }
+		td.truth_value { background-color: #dddddd; }
+
+		.sc0 {
+	}
+	.sc2 {
+		color: #1E9AE0;
+	}
+	.sc4 {
+		color: #FF3A83;
+	}
+	.sc5 {
+		color: #F6F080;
+	}
+	.sc6 {
+		color: #55E439;
+	}
+	.sc9 {
+		color: cyan;
+	}
+	.sc10 {
+		color: #FFAA00;
+	}
+	.sc11 {
+		color: #F8F8F8;
+	}
+	.sc16 {
+		color: #FFAA00;
+	}
+	</style>
+</head><body><h1 class="document_title">CAB202 Topic 6 &ndash; Binary representation of data and bitwise operators.</h1>
+<p >Lawrence Buckingham, Queensland University of Technology.</p>
+	
+    <h2><a name="_contents">Contents</a></h2>
+    
+  <ul >
+      <li > 
+  <a href="#0" title="0">References</a>
+  
+      
+  
+  
+  
+  
+  </li>
+    
+      <li > 
+  <a href="#1" title="1">Binary digits and operations</a>
+  
+      
+  
+  
+  
+  
+  </li>
+    
+      <li > 
+  <a href="#2" title="2">Bytes and words: bit patterns to store numbers</a>
+  
+      
+  
+  
+      <ul >
+          <li >
+    
+  <a href="#3" title="3">Computer words</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#4" title="4">Quick review of the base 10 number system</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#5" title="5">Scanning and printing unsigned integers: base 10 &ndash; Horner&rsquo;s Algorithm</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#6" title="6">Generalising to other bases</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#7" title="7">Binary representation of positive integers</a>
+    
+    
+          </li>
+          </ul>
+  
+  
+  
+  </li>
+    
+      <li > 
+  <a href="#8" title="8">Binary operations on words</a>
+  
+      
+  
+  
+      <ul >
+          <li >
+    
+  <a href="#9" title="9">Bitwise complement</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#10" title="10">Bitwise or</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#11" title="11">Bitwise and</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#12" title="12">Bitwise exclusive-or (xor)</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#13" title="13">How addition works (aka Binary long addition)</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#14" title="14">Two&rsquo;s complement: &ldquo;negative&rdquo; numbers and binary subtraction</a>
+    
+    
+          </li>
+          
+          <li >
+    
+  <a href="#15" title="15">Bit shift operators: fast multiplication and division by powers of 2</a>
+    
+    
+          </li>
+          </ul>
+  
+  
+  
+  </li>
+    
+      <li > 
+  <a href="#16" title="16">Bit masks: getting, setting, and erasing bits</a>
+  
+      
+  
+  
+  
+  
+  </li>
+    
+      <li > 
+  <a href="#17" title="17">Bitwise operators demo program</a>
+  
+      
+  
+  
+  
+  
+  </li>
+    
+      </ul>
+	
+	
+  
+
+    
+    
+
+      
+		
+
+    
+
+    
+		<h2><a name="0"></a>References</h2>
+    <div class="section">
+		<p >It is strongly recommended that you read the following reference material in conjunction with this topic:</p>
+
+		<ul ><li ><a href="http://libcat.library.qut.edu.au/search<li >S8?/aOualline%2C+Steve%2C/aoualline+steve/-3%2C-1%2C0%2CB/exact&FF=aoualline+steve&1%2C5%2C</li>
+"  target="_blank"> Practical C Programming, Chapter 11</a></li>
+<li ><a href="https://en.wikipedia.org/wiki/Bitwise_operations_in_C" target="_blank">Wikipedia, Bitwise operations in C</a></li>
+<li ><a href="https://qut.primo.exlibrisgroup.com/discovery/fulldisplay?docid=alma991006121949704001&context=L&vid=61QUT_INST:61QUT&lang=en&search_scope=MyInst_and_CI&adaptor=Local%20Search%20Engine&tab=Everything&query=any,contains,programming%20with%20C&facet=rtype,exclude,reviews&facet=rtype,exclude,newspaper_articles&mode=Basic"  target="_blank"> Programming with C, Chapter 13 Low level Programming</a></li>
+</ul>
+		<hr />
+	</div>
+    <h2><a name="1"></a>Binary digits and operations</h2>
+    <div class="section">
+		<p >Computer systems use binary representations to encode all data.</p>
+
+		<ul ><li >Binary means "two states".</li>
+<li >The two values in an electronic computer correspond to switch states: "On" and "Off"</li>
+<li >Analogues: <code>true</code> and <code>false</code>; <code>1</code> and <code>0</code>.</li>
+<li >We use the term <em>bit</em> to refer to a <em>binary digit</em>.</li>
+</ul>
+		<p >We recognise a small number of operations which act on single bits or pairs of bits.</p>
+
+		<ul ><li ><b>Complement</b> &ndash; Flip bit from 1 to 0 and vice-versa:
+			<table border="1" cellpadding="10" cellspacing="0">
+			<tr ><td ><code>A</code></td><td ><code>~A</code></td></tr>
+			<tr ><td ><code>0</code></td><td ><code>1</code></td></tr>
+			<tr ><td ><code>1</code></td><td ><code>0</code></td></tr>
+			</table></li>
+<li ><b>Bitwise OR</b> &ndash; combine two values, result is <code>1</code> if and only if either operand is <code>1</code>:
+			<table border="1" cellpadding="10" cellspacing="0">
+			<tr >
+				<td colspan="2" rowspan="2"><code>A|B</code></td><td colspan="2"><code>B</code></td>  </tr>
+			<tr ><td ><code>0</code></td><td ><code>1</code></td></tr>
+			<tr ><td rowspan="2"><code>A</code></td><td ><code>0</code></td><td ><code>0</code></td><td ><code>1</code></td></tr>
+			<tr ><td ><code>1</code></td><td ><code>1</code></td><td ><code>1</code></td></tr>
+			</table></li>
+<li ><b>Bitwise AND</b> &ndash; combine two values, result is <code>1</code> if and only if BOTH operands are <code>1</code>:
+			<table border="1" cellpadding="10" cellspacing="0">
+			<tr >
+				<td colspan="2" rowspan="2"><code>A&amp;B</code></td><td colspan="2"><code>B</code></td>  </tr>
+			<tr ><td ><code>0</code></td><td ><code>1</code></td></tr>
+			<tr ><td rowspan="2"><code>A</code></td><td ><code>0</code></td><td ><code>0</code></td><td ><code>0</code></td></tr>
+			<tr ><td ><code>1</code></td><td ><code>0</code></td><td ><code>1</code></td></tr>
+			</table></li>
+<li ><b>Bitwise XOR</b> &ndash; (exclusive or) combine two values, result is <code>1</code> if and only if operands are different:
+			<table border="1" cellpadding="10" cellspacing="0">
+			<tr >
+				<td colspan="2" rowspan="2"><code>A^B</code></td><td colspan="2"><code>B</code></td>  </tr>
+			<tr ><td ><code>0</code></td><td ><code>1</code></td></tr>
+			<tr ><td rowspan="2"><code>A</code></td><td ><code>0</code></td><td ><code>0</code></td><td ><code>1</code></td></tr>
+			<tr ><td ><code>1</code></td><td ><code>1</code></td><td ><code>0</code></td></tr>
+			</table></li>
+<li ><b>Bitwise ADD</b> &ndash; add two bit values with carry:
+			<table border="1" cellpadding="10" cellspacing="0">
+			<tr ><td ><code>A</code></td><td ><code>B</code></td><td ><code>Carry<sub>in</sub></code></td><td ><code>A+B</code></td><td ><code>Carry<sub>out</sub></code></td></tr>
+			<tr ><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td></tr>
+			<tr ><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td></tr>
+			<tr ><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td></tr>
+			<tr ><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td></tr>
+			<tr ><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td></tr>
+			<tr ><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td></tr>
+			<tr ><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>0</code></td><td style="text-align: center;"><code>1</code></td></tr>
+			<tr ><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td><td style="text-align: center;"><code>1</code></td></tr>
+			</table>
+			<p >This is a special case of single digit addition that we learned in preschool. The following block diagram illustrates the data flow in a one-bit adder.</p>
+			<div class="indent"><img src="data:image/png;base64,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
+" />
+    
+    </div></li>
+</ul>
+	</div>
+    <h2><a name="2"></a>Bytes and words: bit patterns to store numbers</h2>
+    <div class="section">
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="3"></a>Computer words</h3>
+    <div class="subsection">
+			<p >To represent larger numeric values we gather a multiple bits into groups called <em>words</em>.</p>
+			<ul ><li >Typical machines have words with 8 bits, 16 bits, 32 bits or 64 bits.</li>
+<li >The word size determines the basic unit of data that can be processed by each machine instruction.</li>
+<li >A <em>byte</em> is usually considered to be 8 bits, but there are situations where a byte may be as few as 5 bits or as many as 9 bits.</li>
+<li >To avoid this ambiguous term, C does not have a built-in type called byte. Instead we use <code>char</code>, <code>unsigned&nbsp;char</code>, <code>int8_t</code>, or <code>uint8_t</code> when we need to work with bytes.</li>
+<li >That said, the smallest separately addressable unit of memory in the computers we work with is a byte.</li>
+<li >To access individual bits within a byte we use bitwise operators (<a href="#bit_masks" >Bit masks: getting, setting, and erasing bits</a>).</li>
+</ul>
+		</div>
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="4"></a>Quick review of the base 10 number system</h3>
+    <div class="subsection">
+			<p >Consider first the decimal numbers we are familiar with.</p>
+			<ul ><li >Suppose we are working with 8-digit decimal numbers called <b><code>X</code></b>, <b><code>Y</code></b>, and <b><code>Z</code></b>.</li>
+<li >Every number in this set has a unique representation as a series of digits:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = X<sub>7</sub>&times;10<sup>7</sup> + X<sub>6</sub>&times;10<sup>6</sup> + X<sub>5</sub>&times;10<sup>5</sup> + X<sub>4</sub>&times;10<sup>4</sup> + X<sub>3</sub>&times;10<sup>3</sup> + X<sub>2</sub>&times;10<sup>2</sup> + X<sub>1</sub>&times;10<sup>1</sup> + X<sub>0</sub>&times;10<sup>0</sup></code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y = Y<sub>7</sub>&times;10<sup>7</sup> + Y<sub>6</sub>&times;10<sup>6</sup> + Y<sub>5</sub>&times;10<sup>5</sup> + Y<sub>4</sub>&times;10<sup>4</sup> + Y<sub>3</sub>&times;10<sup>3</sup> + Y<sub>2</sub>&times;10<sup>2</sup> + Y<sub>1</sub>&times;10<sup>1</sup> + Y<sub>0</sub>&times;10<sup>0</sup></code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z = Z<sub>7</sub>&times;10<sup>7</sup> + Z<sub>6</sub>&times;10<sup>6</sup> + Z<sub>5</sub>&times;10<sup>5</sup> + Z<sub>4</sub>&times;10<sup>4</sup> + Z<sub>3</sub>&times;10<sup>3</sup> + Z<sub>2</sub>&times;10<sup>2</sup> + Z<sub>1</sub>&times;10<sup>1</sup> + Z<sub>0</sub>&times;10<sup>0</sup></code></b>
+				<br />
+				where <b><code>0 &le; X<sub>i</sub>, Y<sub>i</sub>, Z<sub>i</sub> &le; 9, i = 0, ..., 7</code></b>.</li>
+<li >Thus, if <b><code>X = 12345678<sub>10</sub></code></b>, then
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>7</sub> = 1</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>6</sub> = 2</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>5</sub> = 3</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>4</sub> = 4</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>3</sub> = 5</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>2</sub> = 6</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>1</sub> = 7</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>0</sub> = 8</code></b></li>
+<li >The <em>most significant digit</em> is the coefficient of the largest power of 10, i.e. &ldquo;the one on the left&rdquo;.</li>
+<li >The <em>least significant digit</em> is the coefficient of the smallest power of 10, i.e. &ldquo;the one on the right&rdquo;.</li>
+</ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="5"></a>Scanning and printing unsigned integers: base 10 &ndash; Horner&rsquo;s Algorithm</h3>
+    <div class="subsection">
+			<p >Suppose we are required to convert a sequence of base 10 digits (perhaps they are stored in a string, or perhaps they are scanned from a stream) into a numeric value.</p>
+			<ul ><li >This is actually a little trickier than it might look if we get only one chance to look at each character.</li>
+<li >The first character scanned will become the most significant digit, but until we get to the end of the digits we won&rsquo;t know how many digits there are. So at the time when we have the most significant digit we will not be able to multiply it by its correct power of 10.</li>
+<li >We use a variation on Horner&rsquo;s algorithm to efficiently compute the numeric value. This algorithm can be used to compute arbitrary polynomial functions.</li>
+<li >Consider the decimal representation of <b><code>X</code></b> above. Instead of computing
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = X<sub>7</sub>&times;10<sup>7</sup> + X<sub>6</sub>&times;10<sup>6</sup> + X<sub>5</sub>&times;10<sup>5</sup> + X<sub>4</sub>&times;10<sup>4</sup> + X<sub>3</sub>&times;10<sup>3</sup> + X<sub>2</sub>&times;10<sup>2</sup> + X<sub>1</sub>&times;10<sup>1</sup> + X<sub>0</sub>&times;10<sup>0</sup></code></b>
+				<br />
+				we compute
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>(((((((X<sub>7</sub>&times;10+X<sub>6</sub>)&times;10+X<sub>5</sub>)&times;10+X<sub>4</sub>)&times;10+X<sub>3</sub>)&times;10+X<sub>2</sub>)&times;10+X<sub>1</sub>)&times;10)+X<sub>0</sub></code></b></li>
+<li >The nested parentheses hide the elegance of the algorithm, but it is easy to see how many operations are performed: 7 multiplications and 8 additions.</li>
+<li >By comparison, if the direct decimal representation were computed from left to right as written, it would involve 8 additions and (8+7+6+5+4+3+2)=35 multiplications.</li>
+<li >Another selling point is that we don&rsquo;t need tom know ahead of time how many digits will arrive.</li>
+</ul>
+			<p >The program below shows how to read and  write an unsigned integer without resorting to <code>scanf()</code> or <code>printf()</code>.</p>
+			<ul ><li >A rudimentary test driver declares and exercises two functions: <code>read_decimal()</code> and <code>print_decimal()</code>.</li>
+<li >The test driver uses <code>puts()</code> to display strings because formatted output conversion is not required.
+				<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;">
+<span class="sc10">#include &lt;stdio.h&gt;
+</span><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;ctype.h&gt;
+</span>
+<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">read_decimal</span>();
+<span class="sc10">void</span> <span class="sc11">print_decimal</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>);
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>)
+{
+    <span class="sc11">puts</span>(<span class="sc6">"Please enter an unsigned integer in decimal format: "</span>);
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">val</span> = <span class="sc11">read_decimal</span>();
+    <span class="sc11">puts</span>(<span class="sc6">"The value you entered was: "</span>);
+    <span class="sc11">print_decimal</span>(<span class="sc11">val</span>);
+    <span class="sc11">puts</span>(<span class="sc6">""</span>);
+    <span class="sc5">return</span> <span class="sc4">0</span>;
+}
+</pre>
+		</li>
+<li >Function <code>read_decimal</code> implements Horner&rsquo;s algorithm.
+				<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;">
+<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">read_decimal</span>()
+{
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">x</span> = <span class="sc4">0</span>;
+    <span class="sc9">int</span> <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+
+    <span class="sc2">// Skip over leading spaces.</span>
+    <span class="sc5">while</span> (<span class="sc11">isspace</span>(<span class="sc11">ch</span>))
+    {
+        <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+    }
+
+    <span class="sc2">// try to parse an integer</span>
+    <span class="sc5">while</span> (<span class="sc11">isdigit</span>(<span class="sc11">ch</span>))
+    {
+        <span class="sc11">x</span> = <span class="sc11">x</span> * <span class="sc4">10</span> + (<span class="sc11">ch</span> - <span class="sc4">'0'</span>);
+        <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+    }
+
+    <span class="sc11">ungetc</span>(<span class="sc11">ch</span>, <span class="sc11">stdin</span>);
+
+    <span class="sc5">return</span> <span class="sc11">x</span>;
+}
+</pre>
+		<ul ><li >The result is accumulated in an unsigned integer variable called <b><code>x</code></b>, initially zero.</li>
+<li >We read characters from standard input using <code>fgetc()</code>. The ASCII code of each character is kept in variable <b><code>ch</code></b>.</li>
+<li >Before a attempting numeric conversion, we skip over spaces, tabs, form feed and line feed characters, so by the end of the first loop, <b><code>ch</code></b> is guaranteed to hold the ASCII code of some potentially useable character.</li>
+<li >While <b><code>ch</code></b> is a digit, we use Horner: <b><code>x</code></b> is multiplied by 10, and the numeric value of the most recent digit is added.</li>
+<li >By the time the second loop terminates, all contiguous digits have been consumed, and <b><code>ch</code></b> contains some non-digit code.</li>
+<li >We push the value of <b><code>ch</code></b> back onto the input stream so it will be available for subsequent reading.</li>
+</ul></li>
+<li >Function <b><code>print_decimal</code></b> shows how to convert an unsigned integer from its internal representation to a decimal string. 
+				<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;">
+<span class="sc10">void</span> <span class="sc11">print_decimal</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>)
+{
+    <span class="sc5">if</span> (<span class="sc11">value</span> &gt; <span class="sc4">10</span>)
+    {
+        <span class="sc11">print_decimal</span>(<span class="sc11">value</span> / <span class="sc4">10</span>);
+    }
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">last_digit</span> = <span class="sc11">value</span> % <span class="sc4">10</span>;
+    <span class="sc11">fputc</span>(<span class="sc4">'0'</span> + <span class="sc11">last_digit</span>, <span class="sc11">stdout</span>);
+}
+</pre>
+		<ul ><li >We use a recursive divide-and-conquer algorithm.</li>
+<li >The basic idea is that we can split the job into two parts, one of which is really easy, and the other of which is maybe not quite so easy, but still simpler than the original task.</li>
+<li >Integer division lets us get all digits other than the least significant digit, and then print them as a number in their own right. This reduces the size of the task by 1 digit.</li>
+<li >After that, we extract the least significant digit and print it.</li>
+<li >Thus the final algorithm is:
+					<ol ><li >If the value to be displayed is greater than 10:
+						<br /><span style="margin-left:0.25in;">&nbsp;</span>Divide by 10 to get everything <em>except</em> the least significant digit.
+						<br /><span style="margin-left:0.25in;">&nbsp;</span>This is an unsigned integer, so it can be displayed by <b><code>print_decimal</code></b>.</li>
+<li >In all cases:
+						<br /><span style="margin-left:0.25in;">&nbsp;</span>Get the numeric value of the least significant digit, convert it to a decimal character, and print it.</li>
+</ol></li>
+</ul></li>
+</ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="6"></a>Generalising to other bases</h3>
+    <div class="subsection">
+			<p >This representation immediately generalises to bases other than 10.</p>
+			<ul ><li >Suppose now that instead of base 10, we want to use base <b><code>B</code></b> for our number system.</li>
+<li >Once again, <b><code>X</code></b>, <b><code>Y</code></b>, and <b><code>Z</code></b> have a unique representation, and they can be expressed by series of digits:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = X<sub>7</sub>&times;B<sup>7</sup> + X<sub>6</sub>&times;B<sup>6</sup> + X<sub>5</sub>&times;B<sup>5</sup> + X<sub>4</sub>&times;B<sup>4</sup> + X<sub>3</sub>&times;B<sup>3</sup> + X<sub>2</sub>&times;B<sup>2</sup> + X<sub>1</sub>&times;B<sup>1</sup> + X<sub>0</sub>&times;B<sup>0</sup></code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y = Y<sub>7</sub>&times;B<sup>7</sup> + Y<sub>6</sub>&times;B<sup>6</sup> + Y<sub>5</sub>&times;B<sup>5</sup> + Y<sub>4</sub>&times;B<sup>4</sup> + Y<sub>3</sub>&times;B<sup>3</sup> + Y<sub>2</sub>&times;B<sup>2</sup> + Y<sub>1</sub>&times;B<sup>1</sup> + Y<sub>0</sub>&times;B<sup>0</sup></code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z = Z<sub>7</sub>&times;B<sup>7</sup> + Z<sub>6</sub>&times;B<sup>6</sup> + Z<sub>5</sub>&times;B<sup>5</sup> + Z<sub>4</sub>&times;B<sup>4</sup> + Z<sub>3</sub>&times;B<sup>3</sup> + Z<sub>2</sub>&times;B<sup>2</sup> + Z<sub>1</sub>&times;B<sup>1</sup> + Z<sub>0</sub>&times;B<sup>0</sup></code></b>
+				<br />
+				but this time the digits obey a different constraint <b><code>0 &le; X<sub>i</sub>, Y<sub>i</sub>, Z<sub>i</sub> &le; (B-1), i = 0, ..., 7</code></b>,
+				so different digit sequences will appear.</li>
+</ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="7"></a>Binary representation of positive integers</h3>
+    <div class="subsection">
+			<p >Consider the <b><code>8</code></b> digit binary representation for unsigned numbers. The base for the representation is <b><code>B = 2</code></b>, and we might rewrite the value of <b><code>X</code></b> as:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = 128&times;X<sub>7</sub> + 64&times;X<sub>6</sub> + 32&times;X<sub>5</sub> + 16&times;X<sub>4</sub> + 8&times;X<sub>3</sub> + 4&times;X<sub>2</sub> + 2&times;X<sub>1</sub> + 1&times;X<sub>0</sub></code></b>
+				<br />
+				with <b><code>X<sub>i</sub></code></b> in <b><code>{0,1}</code></b>, and similarly for <b><code>Y</code></b> and <b><code>Z</code></b>.</p>
+<p >We will see that it actually turns out to be better in some circumstances to stick with the polynomial-like notation:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = 2<sup>7</sup>X<sub>7</sub> + 2<sup>6</sup>X<sub>6</sub> + 2<sup>5</sup>X<sub>5</sub> + 2<sup>4</sup>X<sub>4</sub> + 2<sup>3</sup>X<sub>3</sub> + 2<sup>2</sup>X<sub>2</sub> + 2<sup>1</sup>X<sub>1</sub> + 2<sup>0</sup>X<sub>0</sub></code></b>.
+				<br />
+				The reason this is useful is because the C language has operators that make it very easy and efficient to compute powers of 2 (See <a href="#bit_shifting" >Bit shift operators</a>).</p>
+<p >The following program demonstrates how to convert between unsigned integers and binary digit (character) sequences.
+				<ul ><li >A basic test driver calls <code>read_binary</code> to parse a list of binary digits from standard input and display the results to standard output.
+					<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;">
+<span class="sc10">#include &lt;stdio.h&gt;
+</span><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;ctype.h&gt;
+</span>
+<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">read_binary</span>();
+<span class="sc10">void</span> <span class="sc11">print_decimal</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>);
+<span class="sc10">void</span> <span class="sc11">print_binary</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>);
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>)
+{
+    <span class="sc11">puts</span>(<span class="sc6">"Please enter an integer using binary notation:"</span>);
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">val</span> = <span class="sc11">read_binary</span>();
+    <span class="sc11">puts</span>(<span class="sc6">"You entered:"</span>);
+    <span class="sc11">print_binary</span>(<span class="sc11">val</span>);
+    <span class="sc11">puts</span>(<span class="sc6">"\nThis is the same as decimal value: "</span>);
+    <span class="sc11">print_decimal</span>(<span class="sc11">val</span>);
+    <span class="sc11">puts</span>(<span class="sc6">""</span>);
+}
+</pre>
+		</li>
+<li >To adapt <code>read_decimal</code> to produce <code>read_binary</code>, change 10 to 2 in the division and modulus operations, and adjust the predicate in the second loop to ensure that only the digits <code>'0'</code> and <code>'1'</code> are accepted.
+					<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;">
+<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">read_binary</span>()
+{
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">x</span> = <span class="sc4">0</span>;
+    <span class="sc9">int</span> <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+
+    <span class="sc2">// Skip over leading spaces.</span>
+    <span class="sc5">while</span> (<span class="sc11">isspace</span>(<span class="sc11">ch</span>))
+    {
+        <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+    }
+
+    <span class="sc2">// try to parse an integer</span>
+    <span class="sc5">while</span> (<span class="sc11">ch</span> == <span class="sc4">'0'</span> || <span class="sc11">ch</span> == <span class="sc4">'1'</span>)
+    {
+        <span class="sc11">x</span> = <span class="sc11">x</span> * <span class="sc4">2</span> + (<span class="sc11">ch</span> - <span class="sc4">'0'</span>);
+        <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+    }
+
+    <span class="sc11">ungetc</span>(<span class="sc11">ch</span>, <span class="sc11">stdin</span>);
+
+    <span class="sc5">return</span> <span class="sc11">x</span>;
+}
+</pre>
+		</li>
+<li >Similarly, to display the value of an unsigned integer in binary format, it is sufficient to change 10 to 2 in <code>print_decimal</code>.
+					<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;">
+<span class="sc10">void</span> <span class="sc11">print_binary</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>)
+{
+    <span class="sc5">if</span> (<span class="sc11">value</span> &gt; <span class="sc4">2</span>)
+    {
+        <span class="sc11">print_decimal</span>(<span class="sc11">value</span> / <span class="sc4">2</span>);
+    }
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">last_digit</span> = <span class="sc11">value</span> % <span class="sc4">2</span>;
+    <span class="sc11">fputc</span>(<span class="sc4">'0'</span> + <span class="sc11">last_digit</span>, <span class="sc11">stdout</span>);
+}
+</pre>
+		</li>
+</ul></p>
+<p >Finally, GCC provides a non-standard extension which allows us to use binary notation to represent numeric literals.</p>
+
+			<ul ><li >Binary literals are numeric expressions which start with the symbols <b><code>0b</code></b> and contain only the digits <b><code>0</code></b> and/or <b><code>1</code></b>.</li>
+<li >Examples:
+				<ul ><li ><b><code>0 == 0b0 == 0b00000000</code></b> &ndash; these are all ways to write zero.</li>
+<li ><b><code>1 == 0b1 == 0b00000001</code></b> &ndash; different ways to write 1.</li>
+<li ><b><code>5 == 0b101 == 0b00000101</code></b></li>
+<li ><b><code>12 == 0b1100 == 0b00001100</code></b></li>
+<li ><b><code>127 == 0b1111111 == 0b01111111</code></b></li>
+<li ><b><code>128 == 0b10000000</code></b></li>
+<li ><b><code>255 == 0b11111111</code></b></li>
+</ul></li>
+<li >These are all representations for quantities of type <b><code>int</code></b> &ndash; there is truly no difference between &ldquo;binary&rdquo; numbers and numbers. <b>All data in a computer is binary data.</b></li>
+</ul>
+		</div> 
+	</div>
+    <h2><a name="8"></a>Binary operations on words</h2>
+    <div class="section">
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="9"></a>Bitwise complement</h3>
+    <div class="subsection"> 
+			<p >The <em>bitwise complement</em> is denoted in C by the prefix unary operator <b><code>~</code></b>. The operation is defined as follows:</p>
+
+			<ul ><li >Let <b><code>X</code></b> and <b><code>Y</code></b> be unsigned integers with N-bit binary representations
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = 2<sup>N-1</sup>X<sub>N-1</sub> + &hellip; + 2<sup>0</sup>X<sub>0</sub></code></b> and 
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y = 2<sup>N-1</sup>Y<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Y<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X<sub>i</sub>, Y<sub>i</sub> in {0, 1}</code></b>.
+				<br />
+				and let <b><code>Y = ~X</code></b>. Then <b><code>Y<sub>i</sub> = 1 - X<sub>i</sub></code></b> for <b><code>i = 0 .. N-1</code></b>.</li>
+</ul>
+			<p >In English: we get the complement of a value by flipping all the bits in its binary representation.</p>
+<p >Examples (all using N=8 bits):</p>
+
+			<ul ><li ><code>&nbsp;X&nbsp;=&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>~X&nbsp;=&nbsp;0b11101110&nbsp;=&nbsp;238</code></li>
+<li ><code>&nbsp;X&nbsp;=&nbsp;0b00000000&nbsp;=&nbsp;0</code> <br />
+				<code>~X&nbsp;=&nbsp;0b11111111&nbsp;=&nbsp;255</code></li>
+<li ><code>&nbsp;X&nbsp;=&nbsp;0b00000000&nbsp;=&nbsp;0</code> <br />
+				<code>~X&nbsp;=&nbsp;0b11111111&nbsp;=&nbsp;255</code></li>
+</ul>
+			
+			<ul ></ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="10"></a>Bitwise or</h3>
+    <div class="subsection"> 
+			<p >The <em>bitwise or operation</em> in C is a binary infix expression with operator <b><code>|</code></b>. The operation is defined as follows:</p>
+
+			<ul ><li >Let <b><code>X</code></b>, <b><code>Y</code></b>, and <b><code>Z</code></b> be unsigned integers with N-bit binary representations
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = 2<sup>N-1</sup>X<sub>N-1</sub> + &hellip; + 2<sup>0</sup>X<sub>0</sub></code></b> and 
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y = 2<sup>N-1</sup>Y<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Y<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z = 2<sup>N-1</sup>Z<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Z<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X<sub>i</sub>, Y<sub>i</sub>, Z<sub>i</sub></code></b> in <b><code>{0, 1}</code></b>.
+				<br />
+				and let <b><code>Z = X | Y</code></b>. Then for <b><code>i = 0 .. N-1</code></b>:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 1 if X<sub>i</sub> + Y<sub>i</sub> > 0</code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 0 otherwise</code></b>.</li>
+</ul>
+			<p >In English: look at each bit of X and Y; if at least one of them is set, then the corresponding bit in Z will be set; otherwise, it will be clear.</p>
+<p >Examples (all using N=8 bits):</p>
+
+			<ul ><li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b11101110&nbsp;=&nbsp;238</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;|&nbsp;Y&nbsp;=&nbsp;0b11111111&nbsp;=&nbsp;255</code></li>
+<li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00000000&nbsp;=&nbsp;0</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b11111111&nbsp;=&nbsp;255</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;|&nbsp;Y&nbsp;=&nbsp;0b11111111&nbsp;=&nbsp;255</code></li>
+<li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00110011&nbsp;=&nbsp;51</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;|&nbsp;Y&nbsp;=&nbsp;0b00110011&nbsp;=&nbsp;51</code></li>
+</ul>
+			<p >Special cases:</p>
+
+			<ul ><li >For all <b><code>X</code></b>: <b><code>0 | X = X | 0 = X</code></b>.<br />
+				<b><code>OR</code></b> with 0 does nothing.</li>
+<li >For all <b><code>X</code></b>: <b><code>~0 | X = X | ~0 = ~0</code></b>.<br />
+				<b><code>OR</code></b> with <b><code>~0</code></b> overwrites everything with ones.</li>
+</ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="11"></a>Bitwise and</h3>
+    <div class="subsection"> 
+			<p >The <em>bitwise and operation</em>  in C is a binary infix expression with operator <b><code>&</code></b>. The operation is defined as follows:</p>
+
+			<ul ><li >Let <b><code>X</code></b>, <b><code>Y</code></b>, and <b><code>Z</code></b> be unsigned integers with N-bit binary representations
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = 2<sup>N-1</sup>X<sub>N-1</sub> + &hellip; + 2<sup>0</sup>X<sub>0</sub></code></b> and 
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y = 2<sup>N-1</sup>Y<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Y<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z = 2<sup>N-1</sup>Z<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Z<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X<sub>i</sub>, Y<sub>i</sub>, Z<sub>i</sub></code></b> in <b><code>{0, 1}</code></b>.
+				<br />
+				and let <b><code>Z = X & Y</code></b>. Then for <b><code>i = 0 .. N-1</code></b>:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 1 if X<sub>i</sub> + Y<sub>i</sub> = 2</code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 0 otherwise</code></b>.</li>
+</ul>
+			<p >In English: look at each bit of X and Y; if both of them are set, then the corresponding bit in Z will be set; otherwise, it will be clear.</p>
+<p >Examples (all using N=8 bits):</p>
+
+			<ul ><li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b11101110&nbsp;=&nbsp;238</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;&amp;&nbsp;Y&nbsp;=&nbsp;0b00000000&nbsp;=&nbsp;0</code></li>
+<li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00000000&nbsp;=&nbsp;0</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b11111111&nbsp;=&nbsp;255</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;&amp;&nbsp;Y&nbsp;=&nbsp;0b00000000&nbsp;=&nbsp;0</code></li>
+<li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00110011&nbsp;=&nbsp;51</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;&amp;&nbsp;Y&nbsp;=&nbsp;0b00010001&nbsp;=&nbsp;17</code></li>
+</ul>
+			<p >Special cases:</p>
+
+			<ul ><li >For all <b><code>X</code></b>: <b><code>0 | X = X | 0 = 0</code></b>.<br />
+				<b><code>AND</code></b> with 0 clears everything.</li>
+<li >For all <b><code>X</code></b>: <b><code>~0 | X = X | ~0 = ~0</code></b>.<br />
+				<b><code>AND</code></b> with <b><code>~0</code></b> changes nothing.</li>
+</ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="12"></a>Bitwise exclusive-or (xor)</h3>
+    <div class="subsection"> 
+			<p >The <em>bitwise exclusive-or operation</em>  in C is a binary infix expression with operator <b><code>^</code></b>. The operation is defined as follows:</p>
+
+			<ul ><li >Let <b><code>X</code></b>, <b><code>Y</code></b>, and <b><code>Z</code></b> be unsigned integers with N-bit binary representations
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X = 2<sup>N-1</sup>X<sub>N-1</sub> + &hellip; + 2<sup>0</sup>X<sub>0</sub></code></b> and 
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y = 2<sup>N-1</sup>Y<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Y<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z = 2<sup>N-1</sup>Z<sub>N-1</sub> + &hellip; + 2<sup>0</sup>Z<sub>0</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X<sub>i</sub>, Y<sub>i</sub>, Z<sub>i</sub></code></b> in <b><code>{0, 1}</code></b>.
+				<br />
+				and let <b><code>Z = X & Y</code></b>. Then for <b><code>i = 0 .. N-1</code></b>:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 1 if X<sub>i</sub> &ne; Y<sub>i</sub></code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 0 otherwise</code></b>.</li>
+</ul>
+			<p >In English: look at each bit of X and Y; if they are different, then the corresponding bit in Z will be set; otherwise, it will be clear.</p>
+<p >Examples (all using N=8 bits):</p>
+
+			<ul ><li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b11101110&nbsp;=&nbsp;238</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;^&nbsp;Y&nbsp;=&nbsp;0b11111111&nbsp;=&nbsp;255</code></li>
+<li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00000000&nbsp;=&nbsp;0</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b11111111&nbsp;=&nbsp;255</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;^&nbsp;Y&nbsp;=&nbsp;0b11111111&nbsp;=&nbsp;255</code></li>
+<li ><code>X&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00010001&nbsp;=&nbsp;17</code> <br />
+				<code>Y&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0b00110011&nbsp;=&nbsp;51</code> <br />
+				<code>Z&nbsp;=&nbsp;X&nbsp;^&nbsp;Y&nbsp;=&nbsp;0b00100010&nbsp;=&nbsp;34</code></li>
+</ul>
+			<p >Special cases:</p>
+
+			<ul ><li >For all <b><code>X</code></b>: <b><code>0 | X = X | 0 = 0</code></b>.<br />
+				<b><code>AND</code></b> with 0 clears everything.</li>
+<li >For all <b><code>X</code></b>: <b><code>~0 | X = X | ~0 = ~0</code></b>.<br />
+				<b><code>AND</code></b> with <b><code>~0</code></b> changes nothing.</li>
+</ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="13"></a>How addition works (aka Binary long addition)</h3>
+    <div class="subsection">
+			<p >Integer addition is a binary operation which is represented by the infix <b><code>+</code></b> operator. It works according to the rules for &ldquo;long addition&rdquo; we learned at primary school when we learned how to add pairs of multi-digit numbers. The difference is that at primary school we used base 10; computers use base 2.</p>
+
+			<ul ><li >In <a href="#bits" >the introduction</a> we saw a truth table and schematic diagram of a 1-bit adder.</li>
+<li >I have drawn the adder with three inputs (two single-bit operands and an incoming carry bit) and two output (a single bit result and an outgoing carry bit).</li>
+<li >The diagram here is a simplified representation but it should get the idea across (See for example <a href="https://en.wikipedia.org/wiki/Adder_(electronics)" target="_blank">https://en.wikipedia.org/wiki/Adder_(electronics)</a> for more detail).</li>
+<li >Multi-bit binary adders are constructed by chaining multiple single-bit adders, as shown in this diagram.
+				<p >
+    
+    <img src="data:image/png;base64,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
+"   alt="Image of 4-bit adder" /></p></li>
+<li >The figure depicts the <em>add-with-carry</em> operation <b><code>Z = X + Y</code></b>. We work one column at a time from right to left.</li>
+<li >The algorithm is defined by the recurrence relation:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>C<sub>0</sub> = 0</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 1 if (C<sub>i</sub>+X<sub>i</sub>+Y<sub>i</sub> is odd)</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Z<sub>i</sub> = 0 otherwise</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>C<sub>i+1</sub> = 1 if (C<sub>i</sub>+X<sub>i</sub>+Y<sub>i</sub> &ge; 2)</code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>C<sub>i+1</sub> = 0 otherwise</code></b></li>
+<li >Assembly language allows us to access to the carry flag after the operation completes, along with other flags with further status information indicate if the result is zero, non-zero, or if overflow occurred. <em>These flags are not available to C programs.</em></li>
+</ul>
+			<p >Worked example: 8-bit addition, 17 + 35 &rarr; 52.
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>17 = 16 + 1 = 2<sup>4</sup> + 2<sup>0</sup></code></b>
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>35 = 32 + 2 + 1 = 2<sup>5</sup> + 2<sup>1</sup> + 2<sup>0</sup></code></b></p>
+
+			<div class="indent">
+			<table cellspacing="0" cellpadding="10" border="1">
+			<tr >   <td ><code>Bit</code></td> <td ><code>7</code></td> <td ><code>6</code></td> <td ><code>5</code></td> <td ><code>4</code></td> <td ><code>3</code></td> <td ><code>2</code></td> <td ><code>1</code></td> <td ><code>0</code></td></tr>
+			<tr >     <td ><code>C</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>1</code></td> <td ><code>1</code></td> <td ><code>0</code></td></tr>
+			<tr >     <td ><code>X</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>1</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>1</code></td></tr>
+			<tr >     <td ><code>Y</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>1</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>0</code></td> <td ><code>1</code></td> <td ><code>1</code></td></tr>
+			<tr >     <td style="background-color: yellow;"><code>Z</code></td> <td style="background-color: yellow;"><code>0</code></td> <td style="background-color: yellow;"><code>0</code></td> <td style="background-color: yellow;"><code>1</code></td> <td style="background-color: yellow;"><code>1</code></td> <td style="background-color: yellow;"><code>0</code></td> <td style="background-color: yellow;"><code>1</code></td> <td style="background-color: yellow;"><code>0</code></td> <td style="background-color: yellow;"><code>0</code></td></tr>
+			</table></div>
+			<p >Start work at the right-hand side.</p>
+
+			<ul ><li >Initially carry is clear; 1 plus 1 is 0; carry 1.</li>
+<li >Carried 1 plus 0 plus 1 is 0; carry 1.</li>
+<li >Carried 1 plus 0 plus 0 is 1; carry 0.</li>
+<li >Carried 0 plus 0 plus 0 is 0; carry 0.</li>
+<li >Carried 0 plus 1 plus 0 is 1; carry 0.</li>
+<li >Carried 0 plus 0 plus 1 is 1; carry 0.</li>
+<li >The remaining zeros propagate to the left and we&rsquo;re done.</li>
+</ul>
+			
+			<ul ></ul>
+		</div> 
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="14"></a>Two&rsquo;s complement: &ldquo;negative&rdquo; numbers and binary subtraction</h3>
+    <div class="subsection">
+			<p >It is clear how positive integers can be represented as sums of powers of 2, but it is not obvious how negative integers can be handled. One possibility that <em>could work</em> but is not used for integers is to use one bit to tell us if the number is positive or negative. Such a scheme would have several problems:</p>
+
+			<ol ><li >We would end up with two distinct values for 0: +0 and -0. How are these to be processed efficiently?</li>
+<li >It is not clear how operations such as addition would work.</li>
+</ol>
+			<p >These problems are avoided by the <em>Two&rsquo;s complement</em> representation for negative numbers.</p>
+<p >The <em>two&rsquo;s complement</em> of an integer is a unary prefix expression with operator <b><code>-</code></b>. The definition is:</p>
+
+			<ul ><li >Let <b><code>X</code></b> be an integer. Then <b><code>-X = (~X) + 1</code></b>.</li>
+</ul>
+			<p >Examples (Two&rsquo;s complement):</p>
+
+			<div class="indent">	
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>    <td ><b><code> = 0b00000000</code></b></td> <td ><b><code>= 0</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X</code></b></td>   <td ><b><code> = 0b11111111</code></b></td> <td ><b><code>= 255</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X+1</code></b></td> <td ><b><code> = 0b00000000</code></b></td> <td ><b><code>= 0</code></b></td> </tr>
+				</table>
+				<p >Generally: <b><code>-0 == 0</code></b>.</p>
+			
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b> </td>   <td ><b><code> = 0b00000001</code></b></td> <td ><b><code>= 1</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X</code></b></td>   <td ><b><code> = 0b11111110</code></b></td> <td ><b><code></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X+1</code></b></td> <td ><b><code> = 0b11111111</code></b></td> <td ><b><code>= 255</code></b></td> </tr>
+				</table>
+				<p >Conclusion: for N-bit unsigned integers:
+					<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>-1 == 255</code></b> if N = 8;
+					<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>-1 == 65535</code></b> if N = 16; 
+					<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>-1 == 2<sup>N</sup>-1</code></b> in general.</p>
+			
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b> </td>   <td ><b><code> = 0b00010001</code></b></td> <td ><b><code>= 17</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X</code></b></td>   <td ><b><code> = 0b11101110</code></b></td> <td ><b><code></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X+1</code></b></td> <td ><b><code> = 0b11101111</code></b></td> <td ><b><code>= 239</code></b></td> </tr>
+				</table>
+			
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b> </td>   <td ><b><code> = 0b01111111</code></b></td> <td ><b><code>= 127</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X</code></b></td>   <td ><b><code> = 0b10000000</code></b></td> <td ><b><code></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>~X+1</code></b></td> <td ><b><code> = 0b10000001</code></b></td> <td ><b><code>= 129</code></b></td> </tr>
+				</table>
+			</div>
+			<p >Subtraction is then defined as follows:</p>
+
+			<ul ><li >Let <b><code>X</code></b> and <b><code>Y</code></b> be integers with N-bit binary representations as above.</li>
+<li >Define the infix subtraction operator as <b><code>X - Y = X + (-Y)</code></b>.</li>
+</ul>
+			<p >Examples (Binary subtraction):</p>
+
+			<div class="indent">
+				<p >Example: 1 - 1 = 0</p>
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>      <td ><b><code> = 0b00000001</code></b></td> <td ><b><code>= 1</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>Y</code></b></td>      <td ><b><code> = 0b00000001</code></b></td> <td ><b><code>= 1</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>-Y</code></b></td>     <td ><b><code> = 0b11111111</code></b></td> <td ><b><code></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>X+(-Y)</code></b></td> <td ><b><code> = 0b00000000</code></b></td> <td ><b><code>= 0</code></b></td> </tr>
+				</table>
+				<p >Example: 35 - 17 = 18</p>
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>      <td ><b><code> = 0b00100011</code></b></td> <td ><b><code>= 35</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>Y</code></b></td>      <td ><b><code> = 0b00010001</code></b></td> <td ><b><code>= 17</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>-Y</code></b></td>     <td ><b><code> = 0b11101111</code></b></td> <td ><b><code></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>X+(-Y)</code></b></td> <td ><b><code> = 0b00010010</code></b></td> <td ><b><code>= 18</code></b></td> </tr>
+				</table>
+			</div>
+		</div>
+
+		
+		
+
+		
+  
+		
+		
+		
+
+    
+		<h3><a name="15"></a>Bit shift operators: fast multiplication and division by powers of 2</h3>
+    <div class="subsection"> 
+			<p >The left and right shift operators operate on the internal bitwise representation of a value, shifting the entire bit pattern to the left or right respectively.</p>
+<p >In C, left shift is denoted by the operator <b><code>&lt;&lt;</code></b>, and is defined as follows.</p>
+
+			<ul ><li >Let <b><code>X</code></b> and <b><code>Y</code></b> be N-bit integers with bits <b><code>X<sub>N-1</sub>, &hellip; X<sub>0</sub></code></b> and <b><code>Y<sub>N-1</sub>, &hellip; Y<sub>0</sub></code></b>, let <b><code>s</code></b> be an integer, and let <b><code>Y = X &lt;&lt; s</code></b>.</li>
+<li >Then for <b><code>i = 0 .. N-1</code></b>:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y<sub>i</sub> = X<sub>i-s</sub></code></b> if <b><code>0 <= i-s < N</code></b>,
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>Y<sub>i</sub> = 0</code></b> otherwise.</li>
+<li >Informally, if <b><code>s > 0</code></b>, we move each bit of <b><code>X</code></b> to the left <b><code>s</code></b> positions; if <b><code>s</code></b> is negative we move each bit of <b><code>X</code></b> the corresponding distance to the right. Some bits (<b><code>s</code></b> of them to be exact) will disappear off one end (left if <b><code>s > 0</code></b>), and the same number of bits will be zero-filled at the other end.</li>
+<li >Another way to define this operation is:
+				<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>X &lt;&lt; s = (X &times; 2<sup>s</sup>) & (2<sup>N</sup>-1)</code></b>
+				<br />
+				That is, left shift is the same as multiplication by a power of 2.</li>
+</ul>
+			<p >Examples</p>
+
+			<div class="indent">
+				<p >Example: 1 << 1 = 2</p>
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>          <td ><b><code> = 0b00000001</code></b></td> <td ><b><code>= 1 = 2<sup>0</sup></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>s</code></b></td>          <td ><b><code> = 1</code></b>         </td> <td ></td> </tr>
+					<tr > <td style="text-align: left"><b><code>X &lt;&lt; s</code></b></td> <td ><b><code> = 0b00000010</code></b></td> <td ><b><code>= 2 = 2<sup>1</sup></code></b></td> </tr>
+				</table>
+				<p >Example: 1 << 2 = 4</p>
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>          <td ><b><code> = 0b00000001</code></b></td> <td ><b><code>= 1 = 2<sup>0</sup></code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>s</code></b></td>          <td ><b><code> = 2</code></b>         </td> <td ></td> </tr>
+					<tr > <td style="text-align: left"><b><code>X &lt;&lt; s</code></b></td> <td ><b><code> = 0b00000100</code></b></td> <td ><b><code>= 4 = 2<sup>2</sup></code></b></td> </tr>
+				</table>
+				<p >Example: 1 << 7 = 128</p>
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>          <td ><b><code> = 0b00000001</code></b></td> <td ><b><code>= 1</code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>s</code></b></td>          <td ><b><code> = 7</code></b>         </td> <td ></td> </tr>
+					<tr > <td style="text-align: left"><b><code>X &lt;&lt; s</code></b></td> <td ><b><code> = 0b10000000</code></b></td> <td ><b><code>= 128 = 2<sup>7</sup></code></b></td> </tr>
+				</table>
+				<p >Example: 17 << 3 = 136</p>
+				<table >
+					<tr > <td style="text-align: left"><b><code>X</code></b></td>          <td ><b><code> = 0b00010001</code></b></td> <td ><b><code>= 17 = 2<sup>4</sup> + 2<sup>0</sup> </code></b></td> </tr>
+					<tr > <td style="text-align: left"><b><code>s</code></b></td>          <td ><b><code> = 3</code></b>         </td> <td ></td> </tr>
+					<tr > <td style="text-align: left"><b><code>X &lt;&lt; s</code></b></td> <td ><b><code> = 0b10001000</code></b></td> <td ><b><code>= 136 = 2<sup>7</sup> + 2<sup>3</sup> </code></b></td> </tr>
+				</table>
+			</div>
+			<p >Right-shift using the <b><code>&gt;&gt;</code></b> operator is conceptually (and mathematically) almost identical to left shift. The only difference is the direction that the bits are shifted.</p>
+
+			<ul ><li >Just as left shift is equivalent to multiplication by a power of 2, right shift is equivalent to division by a power of 2.</li>
+</ul>
+			
+			<ul ></ul>
+			
+			<ul ></ul>
+		</div>
+
+	</div>
+    <h2><a name="16"></a>Bit masks: getting, setting, and erasing bits</h2>
+    <div class="section">
+		<p >A <em>bit mask</em> is a numeric value which is used in conjunction with the bitwise operators (and, or, xor, complement, shift) to manipulate the internal structure of some other value. Bit masks are used in low-level programming, typically to manage interaction between the computer and peripheral devices.</p>
+
+		<ul ><li >Set or clear specific bits in a variable without disrupting the other bits.
+			<ul ><li >To <b>set</b> a specific bit means <em>make the value of that bit equal to 1 without changing the value of any other bit in the same word</em>.</li>
+<li >To <b>clear</b> a specific bit means <em>make the value of that bit equal to 0 without changing the value of any other bit in the same word</em>.</li>
+</ul></li>
+<li >Read the value of one or more specific bits in isolation from the other bits.</li>
+<li >Toggle the value of specific bits in a variable without interfering with the value of other bits.</li>
+</ul>
+		<p >In all of these scenarios, the first step is to construct a mask. This is done by a combination of left-shift and bitwise or operations.</p>
+<p >We lead with examples of how to use a bit mask to set specific bits:</p>
+
+		<ul ><li >To set bit 0 of variable <b><code>reg</code></b>, which has been declared elsewhere, without disturbing the other bits:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 0);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg = reg | mask;</code></b>
+			<br />
+			This may also be written as:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg |= mask;</code></b></li>
+<li >To set bits 1, 3, and 5 of variable <b><code>reg</code></b>, which has been declared elsewhere, without disturbing the other bits:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 1) | (1 &lt;&lt; 3) | (1 &lt;&lt; 5);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg = reg | mask;</code></b>
+			<br />
+			This may also be written as:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg |= mask;</code></b></li>
+</ul>
+		<p >Clearing bits involves inserting zeros. However, do not try to use a mask of the form <b><code>0 &lt;&lt; s</code></b> &ndash; this it completely pointless, because <b><code>0 &lt;&lt; s == 0</code></b>, and <b><code>x | 0 == x</code></b> for all <b><code>x</code></b>.</p>
+<p >Clearing bits involves the same kind of bit mask as we use to set bits, but it is used in a different way:</p>
+
+		<ul ><li >To clear bit 0 of variable <b><code>reg</code></b>, which has been declared elsewhere, without disturbing the other bits:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 0);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg = reg & ~mask;</code></b>
+			<br />
+			This may also be written as:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg &= ~mask;</code></b></li>
+<li >To clear bits 1, 3, and 5 of variable <b><code>reg</code></b>, which has been declared elsewhere, without disturbing the other bits:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 1) | (1 &lt;&lt; 3) | (1 &lt;&lt; 5);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg = reg & ~mask;</code></b>
+			<br />
+			This may also be written as:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg &= ~mask;</code></b></li>
+</ul>
+		<p >Toggle means to flip from off to on, or from on to off.</p>
+<p >Toggling bits is basically the same as setting them,except that the XOR operator is used instead of OR:</p>
+
+		<ul ><li >To toggle bit 0 of variable <b><code>reg</code></b>, which has been declared elsewhere, without disturbing the other bits:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 0);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg = reg ^ mask;</code></b>
+			<br />
+			This may also be written as:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg ^= mask;</code></b></li>
+<li >To clear bits 1, 3, and 5 of variable <b><code>reg</code></b>, which has been declared elsewhere, without disturbing the other bits:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 1) | (1 &lt;&lt; 3) | (1 &lt;&lt; 5);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg = reg ^ mask;</code></b>
+			<br />
+			This may also be written as:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>reg ^= mask;</code></b></li>
+</ul>
+		<p >To extract the value of a single bit from a variable, we use a bit mask to select the bit, and a right-shift to normalise it to <b><code>{0, 1}</code></b>.</p>
+<p >Toggling bits is basically the same as setting them, except that the XOR operator is used instead of OR:</p>
+
+		<ul ><li >To extract bit 0 of variable <b><code>reg</code></b>, which has been declared elsewhere:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 0);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t bit_val = (reg & mask) &gt;&gt; 0;</code></b></li>
+<li >To extract bit 5 of variable <b><code>reg</code></b>, which has been declared elsewhere:
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t mask = (1 &lt;&lt; 5);</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t bit_val = (reg & mask) &gt;&gt; 5;</code></b></li>
+</ul>
+		<p >We have seen that right-shift is equivalent to division by a power of 2. In a similar vein we can use a bit mask to perform very fast modulus (remainder) calculations if the divisor is a power of 2.</p>
+
+		<ul ><li >Suppose <b><code>reg</code></b> has been declared and assigned a value elsewhere, and that we want to find <b><code>reg / n</code></b> and <b><code>reg % n</code></b> <b>where</b> <b><code>n = 1 << s</code></b>. Then :
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t quot = reg >> s;</code></b>
+			<br /><span style="margin-left:0.25in;">&nbsp;</span><b><code>uint8_t rem = reg & ((1 << s) - 1);</code></b></li>
+</ul>
+	</div>
+    <h2><a name="17"></a>Bitwise operators demo program</h2>
+    <div class="section">
+		<p >The following program can be used to experiment with binary values and bitwise operators.</p>
+		<pre style="line-height: 1.25; background: #2A211C; color: #FFFFFF; overflow-x: scroll; font-family: monospace; max-width: 100%;"><span class="sc10">#include &lt;stdio.h&gt;
+</span><span class="sc10">#include &lt;stdint.h&gt;
+</span><span class="sc10">#include &lt;ctype.h&gt;
+</span>
+<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">read_binary</span>();
+<span class="sc10">void</span> <span class="sc11">print_binary</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>, <span class="sc9">int</span> <span class="sc11">bits</span>);
+<span class="sc10">void</span> <span class="sc11">print_result</span>(<span class="sc5">const</span> <span class="sc9">char</span> *<span class="sc11">label</span>, <span class="sc11">uint8_t</span> <span class="sc11">value</span>);
+
+<span class="sc9">int</span> <span class="sc11">main</span>(<span class="sc10">void</span>)
+{
+    <span class="sc11">puts</span>(<span class="sc6">"Please enter an integer a in base 2: "</span>);
+    <span class="sc11">uint8_t</span> <span class="sc11">a</span> = <span class="sc11">read_binary</span>();
+
+    <span class="sc11">puts</span>(<span class="sc6">"Please enter an integer b in base 2: "</span>);
+    <span class="sc11">uint8_t</span> <span class="sc11">b</span> = <span class="sc11">read_binary</span>();
+
+    <span class="sc11">print_result</span>(<span class="sc6">"     a"</span>, <span class="sc11">a</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">"     b"</span>, <span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">"    ~a"</span>, ~<span class="sc11">a</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">"    ~b"</span>, ~<span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">" a | b"</span>, <span class="sc11">a</span> | <span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">" a &amp; b"</span>, <span class="sc11">a</span>&amp;<span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">" a ^ b"</span>, <span class="sc11">a</span>^<span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">" a + b"</span>, <span class="sc11">a</span> + <span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">"    -b"</span>, -<span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">"a + -b"</span>, <span class="sc11">a</span> + (-<span class="sc11">b</span>));
+    <span class="sc11">print_result</span>(<span class="sc6">"a &lt;&lt; b"</span>, <span class="sc11">a</span> &lt;&lt; <span class="sc11">b</span>);
+    <span class="sc11">print_result</span>(<span class="sc6">"a &gt;&gt; b"</span>, <span class="sc11">a</span> &gt;&gt; <span class="sc11">b</span>);
+}
+
+<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">read_binary</span>()
+{
+    <span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">x</span> = <span class="sc4">0</span>;
+    <span class="sc9">int</span> <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+
+    <span class="sc2">// Skip over leading spaces.</span>
+    <span class="sc5">while</span> (<span class="sc11">isspace</span>(<span class="sc11">ch</span>))
+    {
+        <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+    }
+
+    <span class="sc2">// try to parse an integer</span>
+    <span class="sc5">while</span> (<span class="sc11">ch</span> == <span class="sc4">'0'</span> || <span class="sc11">ch</span> == <span class="sc4">'1'</span>)
+    {
+        <span class="sc11">x</span> = <span class="sc11">x</span> * <span class="sc4">2</span> + (<span class="sc11">ch</span> - <span class="sc4">'0'</span>);
+        <span class="sc11">ch</span> = <span class="sc11">fgetc</span>(<span class="sc11">stdin</span>);
+    }
+
+    <span class="sc11">ungetc</span>(<span class="sc11">ch</span>, <span class="sc11">stdin</span>);
+
+    <span class="sc5">return</span> <span class="sc11">x</span>;
+}
+
+<span class="sc10">void</span> <span class="sc11">print_binary</span>(<span class="sc9">unsigned</span> <span class="sc9">int</span> <span class="sc11">value</span>, <span class="sc9">int</span> <span class="sc11">bits</span>)
+{
+    <span class="sc5">for</span> (<span class="sc9">int</span> <span class="sc11">i</span> = <span class="sc11">bits</span>-<span class="sc4">1</span>; <span class="sc11">i</span> &gt;= <span class="sc4">0</span>; <span class="sc11">i</span>--)
+    {
+        <span class="sc11">uint8_t</span> <span class="sc11">mask</span> = <span class="sc4">1</span> &lt;&lt; <span class="sc11">i</span>;
+        <span class="sc11">uint8_t</span> <span class="sc11">bit_val</span> = (<span class="sc11">value</span> &amp; <span class="sc11">mask</span>) &gt;&gt; <span class="sc11">i</span>;
+        <span class="sc11">fputc</span>(<span class="sc11">bit_val</span> + <span class="sc4">'0'</span>, <span class="sc11">stdout</span>);
+    }
+}
+
+<span class="sc10">void</span> <span class="sc11">print_result</span>(<span class="sc5">const</span> <span class="sc9">char</span> * <span class="sc11">label</span>, <span class="sc11">uint8_t</span> <span class="sc11">value</span>)
+{
+    <span class="sc11">printf</span>(<span class="sc6">"%s = decimal %03d, hexadecimal %02x, or binary "</span>, <span class="sc11">label</span>, <span class="sc11">value</span>, <span class="sc11">value</span>);
+    <span class="sc11">print_binary</span>(<span class="sc11">value</span>,<span class="sc4">8</span>);
+    <span class="sc11">printf</span>(<span class="sc6">"\n"</span>);
+}
+</pre>
+		</div>
+    <p style="text-align:center"><em>The End</em></p>
+	</body></html>
