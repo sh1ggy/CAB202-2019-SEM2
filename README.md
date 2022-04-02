@@ -1,5 +1,5 @@
 # Microprocessors and Digital Systems (CAB202) 
-![QUT Unit](https://img.shields.io/badge/QUT%20Unit-Tyrone%20Nolasco-darkblue?style=plastic)
+![QUT](https://img.shields.io/badge/QUT-Tyrone%20Nolasco-darkblue?style=plastic)
 ![Year](https://img.shields.io/badge/Year-2019-red?style=plastic)
 ![Language](https://img.shields.io/badge/C-grey?style=plastic&logo=C)
 
